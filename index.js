@@ -32,6 +32,16 @@ function remove_tabbar(window) {
 // run this on the main window, because the first window doesn't trigger the 'open' event, at least on Firefox 44.	
 remove_tabbar(windows.activeWindow);
 
+
+function introspect(o) {
+	console.log("properties of " + o + ":");
+	for(p in o) {
+		console.log(o + "." + p + " = " + o[p]);
+	}
+	console.log("/properties of " + o);
+}
+
+
 exports.main = function(){
 	tabs.on('open', function(tab){
 		
