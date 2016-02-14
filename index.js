@@ -65,7 +65,7 @@ exports.main = function(){
 		// - instead of spawning a new tab, detach it and reattach it to the new window
 		// - spawn a new window and tab, but clone the .document over to it, and also set the .url but somehow disable the load that that will invoke
 		if(!(tab.url == "about:blank")) { throw "initial tab url should always be about:blank"; }
-		var window = windows.open(tab.url);
+		var window = windows.open({'url': tab.url, 'isPrivate': privateBrowsing.isPrivate(tab) });
 
 		// > Properties relating to the tab's content (for example: title, favicon, and url) will not be
 		// > correct at this point. If you need to access these properties, listen for the ready event:
