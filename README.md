@@ -12,7 +12,24 @@ Note: This repo does **NOT** rely on global install of [`jpm`](https://github.co
 
 - `npm install` - Install all dependencies
 - `npm start` - Run the extension on Firefox (stable) with a new temporary profile
-- `npm run package` - Package the extension into an XPI file
+- `npm run package` - Package the extension into an XPI file.
+- `firefox *xpi` - install the package into Firefox
+- `npm run sign` - Get the package signed
+
+### Signing
+
+For Firefox 46+, extensions require signing to be installed, even for testing.
+They will be signed if uploaded to addons.mozilla.org -- once they've been manually reviewed by humans,
+or you can automate it if you get an API key from https://addons.mozilla.org/en-US/developers/addon/api/key/.
+
+It is not clear to me if it is possible to self-sign with a manually installed CA, or if you *must* use Mozilla's root key.
+It seems that Mozilla's [plan](https://wiki.mozilla.org/Addons/Extension_Signing) is for Firefox to fragment into user and developer editions:
+ * the former requiring signatures,
+ * the latter with extra options, in particular `xpinstall.signatures.required`
+but they also allow [automated signing](https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#jpm_sign),
+but only for extensions which aren't on addons.mozilla.org(??) --- so you can sign and host an extension on your own server and Firefox will happily accept it??
+
+Anyway, this all sounds very not DIY friendly, though I suppose I can't fault them since the web is a dangerous place.
 
 
 License
