@@ -12,9 +12,18 @@ Note: This repo does **NOT** rely on global install of [`jpm`](https://github.co
 
 - `npm install` - Install all dependencies
 - `npm start` - Run the extension on Firefox (stable) with a new temporary profile
-- `npm run package` - Package the extension into an XPI file.
+- `npm run package` - Package the extension into an XPI file. -- CAREFUL: this just zips the current directory, so any scrap temp files will get packaged too. Run `git clean -x` before this.
 - `firefox *xpi` - install the package into Firefox
 - `npm run sign` - Get the package signed
+
+See also:
+
+* [Addon SDK documentation](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK)
+
+### Testing
+
+For extensions, `console.log()` goes straight to stdout, but this means you need to `killall firefox` before you try to run it under Firefox.
+It might be easier to use the [notifications API](https://developer.mozilla.org/en-US/Add-ons/SDK/High-Level_APIs/notifications).
 
 ### Signing
 
