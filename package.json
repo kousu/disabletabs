@@ -25,7 +25,6 @@
     "multiprocess": true
   },
   "dependencies": {
-    "chroma-js": "~0.7.4"
   },
   "devDependencies": {
     "jpm": "~1.0.0"

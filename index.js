@@ -7,7 +7,6 @@ var tabs = require('sdk/tabs');
 var notifications = require('sdk/notifications');
 var { setTimeout } = require('sdk/timers');
 var privateBrowsing = require('sdk/private-browsing');
-var chroma = require('chroma-js');
 
 exports.main = function(){
 	var maxTabs = simplePrefs.prefs.maxTabs;
@@ -21,13 +20,12 @@ exports.main = function(){
 		disabled: true
 	});
 
-	var colorScale = chroma.scale(['#A6A6A6', '#B90000']);
 	var updateButton = function(win, tabsLen){
 		if (win == 'window') tabsLen = windows.browserWindows.activeWindow.tabs.length;
 		button.state(win, {
 			label: title + ' - ' + tabsLen + '/' + max,
 			badge: (tabsLen > 99) ? '99+' : tabsLen,
-			badgeColor: colorScale(tabsLen/max).hex()
+			badgeColor: "black";
 		});
 	};
 	var updateAllButtons = function(){
