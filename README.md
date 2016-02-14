@@ -20,4 +20,4 @@ License
 
 [MPL 2.0](https://www.mozilla.org/MPL/2.0/).
 
-Based on @cheeaun's [maxtabs](https://github.com/cheeaun/max-tabs) and @'s [hide tab bar](https://addons.mozilla.org/en-US/firefox/addon/hide-tab-bar-with-one-tab/)
+Based on @cheeaun's [maxtabs](https://github.com/cheeaun/max-tabs) and @Chris000001's [hide tab bar](https://addons.mozilla.org/en-US/firefox/addon/hide-tab-bar-with-one-tab/)
