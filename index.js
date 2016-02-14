@@ -38,23 +38,8 @@ exports.main = function(){
 	windows.on('open', function(window) {
 		console.error("opened window");
 		console.error(window);
-		var c = getTabContainer(viewFor(window));
-		console.error(c.style.display = "none");
+		var c = getTabContainer(viewFor(window)); // this gets the .tabbrowser-tabs element that is defined in chrome://browser/content/tabbrowser.xml
+		c.style.display = "none"; // I'm not totally sure why this works, since I'd expect this to hide the *entire* Window, since you'd think a tabcontainer would contain tabs, but apparently tabs only mean the headers you click to switch the current view.
 	});
 
-// snipped from https://developer.mozilla.org/en-US/Add-ons/SDK/Guides/XUL_Migration_Guide#Modifying_the_Browser_Chrome and hacked
-function removeForwardButton() {
-  var window = require("sdk/window/utils").getMostRecentBrowserWindow();
-  var forward = window.document.getElementById('back-button');
-  var parent = window.document.getElementById('urlbar-container');
-  forward.style['background-color'] = "red"; //hah hah hah wooo
-//  parent.removeChild(forward);
-}
-
-require("sdk/ui/button/action").ActionButton({
-  id: "remove-forward-button",
-  label: "Remove Forward Button",
-  icon: "./icon-16.png",
-  onClick: removeForwardButton
-});
 };
