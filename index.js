@@ -36,7 +36,12 @@ exports.main = function(){
 	tabs.on('open', function(tab){
 		// this is *not* triggered on opening a new window, only on opening a second tab in that window
 		// which means that we can *assume* this code is running in an unwanted new tab
-		
+
+		// i. translate new tab -> new window
+		// We spawn a window out here to give user feedback; if not, the window doesn't spawn until the remote site responds, and that's annoying.
+		if(!(tab.url == "about:blank")) { throw "initial tab url should always be about:blank"; }
+		var window = windows.open(tab.url);
+
 		// > Properties relating to the tab's content (for example: title, favicon, and url) will not be
 		// > correct at this point. If you need to access these properties, listen for the ready event:
 		// The 'ready' event happens after the page has been downloaded but before its requisites have been.
@@ -44,9 +49,8 @@ exports.main = function(){
 		// TODO: save a connection by figuring out if there's a way to detach a tab from a window via the SDK (you can do it with your mouse, afterall!)
 		//       It makes sense that title and favicon will be wrong until then, but it's annoying that .url isn't available.
 		tab.on('ready', function() {
-			// i. translate new tab -> new window
-			windows.open(tab.url);
-	
+			window.tabs[0].url = tab.url;
+			
 			// ii. cancel the new tab
 			tab.close();
 		});
