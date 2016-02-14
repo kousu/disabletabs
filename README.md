@@ -49,6 +49,8 @@ Anyway, this all sounds very not DIY friendly, though I suppose I can't fault th
 
 To use `npm run sign` you need to get an account at AMO, generate an API key, and paste the "key" (i.e. the API account name) into package.json and the "secret" (i.e. the password) into `./api_secret.txt`.
 
+Everytime you sign it you need to bump the version number: AMO remembers every version it signs, forever. So watch your language (i.e. don't swear in C++ or cuss in ALGOL).
+
 TODO
 ----
 
