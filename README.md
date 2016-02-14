@@ -1,9 +1,18 @@
 Disable Tabs
 =============
 
-DisableTabs is a simple extension that completely excises the tabs feature from Firefox.
+DisableTabs is a simple extension that excises the tabs feature from Firefox.
 
-[tabbed](http://tools.suckless.org/tabbed/) and tiling window managers in general add the tab feature popularized by Firefox into the core UI of your system. But this makes actually using Firefox under them really irritating, especially with Mozilla [really wanting to push the tab ubermensch](https://support.mozilla.org/en-US/questions/968331). This disables this feature so that each Firefox is a single page, like [surf](http://surf.suckless.org/), but still allowing full access to Firefox features and add-ons.
+Firefox is a pretty good browser with modern features, a good selection of addons and excellent history search.
+But under [tabbed](http://tools.suckless.org/tabbed/) or any other tiling-style window manager that makes tabs an OS service, it is irritating.
+Mozilla [really wants you to use tabs](https://support.mozilla.org/en-US/questions/968331),
+but they also have a flexible extension API which lets us counteract them.
+Installing it makes browsing tab-less like [surf](http://surf.suckless.org/), without needing to abandon useful addons like uMatrix and NoScript.
+
+Download
+---
+
+(published version coming Real Soon Now).
 
 Development
 ---
