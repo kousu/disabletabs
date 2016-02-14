@@ -8,13 +8,15 @@ DisableTabs is a simple extension that completely excises the tabs feature from 
 Development
 ---
 
-Note: This repo does **NOT** rely on global install of [`jpm`](https://github.com/mozilla/jpm). It's installed locally.
+First install mozilla's packaging manager [`jpm`](https://github.com/mozilla/jpm). If it's not in your system package manager, you need to use `npm`, which you should be able to find in your package manager:
+```
+$ sudo npm install --global jpm
+```
 
-- `npm install` - Install all dependencies
-- `npm start` - Run the extension on Firefox (stable) with a new temporary profile
+Then:
+- `npm run run` - Run the extension on Firefox (stable) with a new temporary profile
 - `npm run package` - Package the extension into an XPI file. -- CAREFUL: this just zips the current directory, so any scrap temp files will get packaged too. Run `git clean -x` before this.
-- `firefox *xpi` - install the package into Firefox
-- `npm run sign` - Get the package signed
+- `npm run sign` - Get the package signed.
 
 See also:
 
@@ -22,19 +24,24 @@ See also:
 
 ### Testing
 
-For extensions, `console.log()` goes straight to stdout, but this means you need to `killall firefox` before you try to run it under Firefox.
+For extensions, `console.log()` goes straight to stdout, but this means you need to `killall firefox` before you try to run it under Firefox,
+or use `jpm run` which spawns a new instance of Firefox.
+
+There's also somethingsomething about loglevels and sending to the GUI console but the MDN docs have drifted from what I actually see in about:config so fuck 'em.
 It might be easier to use the [notifications API](https://developer.mozilla.org/en-US/Add-ons/SDK/High-Level_APIs/notifications).
 
 ### Signing
 
-For Firefox 46+, extensions require signing to be installed, even for testing.
+For Firefox 46+, extensions require signing to be installed
 They will be signed if uploaded to addons.mozilla.org -- once they've been manually reviewed by humans,
 or you can automate it if you get an API key from https://addons.mozilla.org/en-US/developers/addon/api/key/.
 
+If you use `jpm run` then you do not need your extension signed.
+If you have Developer Firefox and set `xpinstall.signatures.required = false` in `about:config`, you do not need your extension signed.
 It is not clear to me if it is possible to self-sign with a manually installed CA, or if you *must* use Mozilla's root key.
 It seems that Mozilla's [plan](https://wiki.mozilla.org/Addons/Extension_Signing) is for Firefox to fragment into user and developer editions:
  * the former requiring signatures,
- * the latter with extra options, in particular `xpinstall.signatures.required`
+ * the latter with secret toggle off
 but they also allow [automated signing](https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#jpm_sign),
 but only for extensions which aren't on addons.mozilla.org(??) --- so you can sign and host an extension on your own server and Firefox will happily accept it??
 
