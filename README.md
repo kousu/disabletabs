@@ -47,10 +47,14 @@ but only for extensions which aren't on addons.mozilla.org(??) --- so you can si
 
 Anyway, this all sounds very not DIY friendly, though I suppose I can't fault them since the web is a dangerous place.
 
+To use `npm run sign` you need to get an account at AMO, generate an API key, and paste the "key" (i.e. the API account name) into package.json and the "secret" (i.e. the password) into `./api_secret.txt`.
+
 TODO
 ----
 
 * [ ] The Double Download Bug
+  - Because .ready doesn't fire until after it's downloaded a page, we are downloading pages twice
+* [ ] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
 
 License
 ---

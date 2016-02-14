@@ -3,6 +3,8 @@ node_modules
 bootstrap.js
 install.rdf
 
+api_secret.txt
+
 # backup files
 *.swp
 *~
