@@ -1,11 +1,9 @@
-Max Tabs
-========
+Disable Tabs
+=============
 
-Max Tabs is a simple Firefox extension that does these:
+DisableTabs is a simple extension that completely excises the tabs feature from Firefox.
 
-- Set a maximum number of tabs opened in a window.
-- Control and restrict oneself from opening too many tabs.
-- Prevent tabs from overloading and overflowing the tab bar.
+[tabbed](http://tools.suckless.org/tabbed/) and tiling window managers in general add the tab feature popularized by Firefox into the core UI of your system. But this makes actually using Firefox under them really irritating, especially with Mozilla [really wanting to push the tab ubermensch](https://support.mozilla.org/en-US/questions/968331). This disables this feature so that each Firefox is a single page, like [surf](http://surf.suckless.org/), but still allowing full access to Firefox features and add-ons.
 
 Development
 ---
@@ -16,12 +14,10 @@ Note: This repo does **NOT** rely on global install of [`jpm`](https://github.co
 - `npm start` - Run the extension on Firefox (stable) with a new temporary profile
 - `npm run package` - Package the extension into an XPI file
 
-Localization
----
-
-[Help translate Max Tabs!](https://www.transifex.com/projects/p/max-tabs/)
 
 License
 ---
 
 [MPL 2.0](https://www.mozilla.org/MPL/2.0/).
+
+Based on @cheeaun's [maxtabs](https://github.com/cheeaun/max-tabs) and @'s [hide tab bar](https://addons.mozilla.org/en-US/firefox/addon/hide-tab-bar-with-one-tab/)
