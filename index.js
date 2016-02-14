@@ -29,8 +29,11 @@ function remove_tabbar(window) {
 	c.style.display = "none";
 }
 
-// run this on the main window, because the first window doesn't trigger the 'open' event, at least on Firefox 44.	
-remove_tabbar(windows.activeWindow);
+// run this on any windows open at boot, because the first windows
+// don't trigger the 'open' event, at least on Firefox 44.
+for(let w of windows) {
+  remove_tabbar(w);
+}
 
 
 function introspect(o) {
