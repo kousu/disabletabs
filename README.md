@@ -55,6 +55,7 @@ TODO
 * [ ] The Double Download Bug
   - Because .ready doesn't fire until after it's downloaded a page, we are downloading pages twice
 * [ ] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
+* [ ] Need a new logo
 
 License
 ---
