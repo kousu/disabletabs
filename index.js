@@ -18,8 +18,21 @@ var { modelFor } = require("sdk/model/core");
 var { viewFor } = require("sdk/view/core");
 var { getTabContainer } = require("sdk/tabs/utils");
 
-exports.main = function(){
 
+function remove_tabbar(window) {
+	// this gets the .tabbrowser-tabs element that is defined in chrome://browser/content/tabbrowser.xml
+	var c = getTabContainer(viewFor(window));
+	
+	// And this axes the tabbar on it.
+	//   I'm not totally sure why this works, since I'd expect this to hide the *entire* Window,
+	//   since you'd think a tabcontainer would contain tabs, but apparently not.
+	c.style.display = "none";
+}
+
+// run this on the main window, because the first window doesn't trigger the 'open' event, at least on Firefox 44.	
+remove_tabbar(windows.activeWindow);
+
+exports.main = function(){
 	tabs.on('open', function(tab){
 		// this is *not* triggered on opening a new window, only on opening a second tab in that window
 		// which means that we can *assume* this code is running in an unwanted new tab
@@ -36,10 +49,6 @@ exports.main = function(){
 	// "by using the SDK's low-level APIs you can directly modify the browser chrome."
 	// see  https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs
 	windows.on('open', function(window) {
-		console.error("opened window");
-		console.error(window);
-		var c = getTabContainer(viewFor(window)); // this gets the .tabbrowser-tabs element that is defined in chrome://browser/content/tabbrowser.xml
-		c.style.display = "none"; // I'm not totally sure why this works, since I'd expect this to hide the *entire* Window, since you'd think a tabcontainer would contain tabs, but apparently tabs only mean the headers you click to switch the current view.
+		remove_tabbar(window);
 	});
-
 };

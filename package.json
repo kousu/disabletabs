@@ -2,24 +2,12 @@
   "name": "disabletabs",
   "license": "MPL 2.0",
   "author": "Kousu Cashew",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "title": "Disable Tabs",
   "id": "disabletabs@kousu",
   "description": "Disables the tab feature.",
-  "preferences": [
-  ],
   "permissions": {
     "private-browsing": true,
     "multiprocess": true
-  },
-  "dependencies": {
-  },
-  "devDependencies": {
-    "jpm": "~1.0.0"
-  },
-  "scripts": {
-    "start": "jpm run",
-    "package": "jpm xpi",
-    "sign": "jpm sign --api-key INSERT_API_LOGIN --api-secret INSERT_API_PASSWORD"
   }
 }
