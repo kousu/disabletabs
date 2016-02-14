@@ -34,11 +34,26 @@ remove_tabbar(windows.activeWindow);
 
 exports.main = function(){
 	tabs.on('open', function(tab){
+		
 		// this is *not* triggered on opening a new window, only on opening a second tab in that window
 		// which means that we can *assume* this code is running in an unwanted new tab
 
 		// i. translate new tab -> new window
 		// We spawn a window out here to give user feedback; if not, the window doesn't spawn until the remote site responds, and that's annoying.
+		// once the tab has told us its URL, we clone the URL over to there
+		// 
+		// This is actually bad: to get the URL, the page has to be downloaded because 'ready' doesn't fire until it has followed all redirects *and* downloaded the page
+		// but we just want the first URL in the chain! This method means we do two downloads of the page!
+		//  - though we're using 'ready' instead of 'load' which means we fire before images and scripts download, at least
+		//  -  and caching will help in a lot of cases.
+		//
+		// Possible fixes:
+		// - somehow catch an earlier event
+		//    - .on('loadstart') doesn't work
+		//    - addProgressListener() doesn't exist on these SDK objects--high nor low level(??)
+		//    - loadContext this: https://github.com/Noitidart/demo-on-http-examine/blob/master/bootstrap.js), and hope that it will give us the target URL
+		// - instead of spawning a new tab, detach it and reattach it to the new window
+		// - spawn a new window and tab, but clone the .document over to it, and also set the .url but somehow disable the load that that will invoke
 		if(!(tab.url == "about:blank")) { throw "initial tab url should always be about:blank"; }
 		var window = windows.open(tab.url);
 
@@ -49,6 +64,7 @@ exports.main = function(){
 		// TODO: save a connection by figuring out if there's a way to detach a tab from a window via the SDK (you can do it with your mouse, afterall!)
 		//       It makes sense that title and favicon will be wrong until then, but it's annoying that .url isn't available.
 		tab.on('ready', function() {
+			// here we actually clone the URL to the new window
 			window.tabs[0].url = tab.url;
 			
 			// ii. cancel the new tab

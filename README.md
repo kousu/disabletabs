@@ -40,6 +40,10 @@ but only for extensions which aren't on addons.mozilla.org(??) --- so you can si
 
 Anyway, this all sounds very not DIY friendly, though I suppose I can't fault them since the web is a dangerous place.
 
+TODO
+----
+
+* [ ] The Double Download Bug
 
 License
 ---
