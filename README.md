@@ -25,7 +25,7 @@ $ sudo npm install --global jpm
 Then:
 - `npm run run` - Run the extension on Firefox (stable) with a new temporary profile
 - `npm run package` - Package the extension into an XPI file. -- CAREFUL: this just zips the current directory, so any scrap temp files will get packaged too. Run `git clean -x` before this.
-- `npm run sign` - Get the package signed.
+- `npm run sign` - Get the package signed. -- CAREFUL: Same warning!
 
 See also:
 

@@ -90,6 +90,6 @@ exports.main = function(){
 	// "by using the SDK's low-level APIs you can directly modify the browser chrome."
 	// see  https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs
 	windows.on('open', remove_tabbar);
-	windows.on('activate', remove_tabbar); // this is defensive coding: sometimes the 'open' event doesn't trigger (e.g. clicking a developer's name in about:addons).
+	//windows.on('activate', remove_tabbar); // this is defensive coding: sometimes the 'open' event doesn't trigger (e.g. clicking a developer's name in about:addons).
 	                                       // these are bugs in the Firefox SDK, as far as I'm concerned, but I have to work around them. by catching 'activate' at least the bar will blip away quickly enough.
 };
