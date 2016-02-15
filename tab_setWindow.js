@@ -14,6 +14,7 @@ Tab.prototype.setWindow = function (window, index) {
         var aTab = viewFor(tab);
         var aWin = viewFor(window);
         var gBrowser = aWin.gBrowser;
+        if(gBrowser === undefined) { throw "missing gBrowser; perhaps you passed the wrong type of window object"; }
 
         // Get tab properties
         var isSelected = oldWindow.activeTab == tab;
