@@ -5,6 +5,8 @@ var windows = require('sdk/windows').browserWindows;
 var notifications = require('sdk/notifications');
 var privateBrowsing = require('sdk/private-browsing');
 
+require("tab_setWindow.js");
+
 // these translate between the chrome (aka XUL) elements and the internal objects
 // the chrome elements are /views/ of the internal /model/ objects
 // this means they have CSS attached but not data
@@ -52,7 +54,7 @@ exports.main = function(){
 		// which means that we can *assume* this code is running in an unwanted new tab
 
 		// i. translate new tab -> new window
-		// We spawn a window out here to give user feedback; if not, the window doesn't spawn until the remote site responds, and that's annoying.
+		/*// We spawn a window out here to give user feedback; if not, the window doesn't spawn until the remote site responds, and that's annoying.
 		// once the tab has told us its URL, we clone the URL over to there
 		// 
 		// This is actually bad: to get the URL, the page has to be downloaded because 'ready' doesn't fire until it has followed all redirects *and* downloaded the page
@@ -67,9 +69,15 @@ exports.main = function(){
 		//    - loadContext this: https://github.com/Noitidart/demo-on-http-examine/blob/master/bootstrap.js), and hope that it will give us the target URL
 		// - instead of spawning a new tab, detach it and reattach it to the new window
 		// - spawn a new window and tab, but clone the .document over to it, and also set the .url but somehow disable the load that that will invoke
+		*/
+		
 		if(!(tab.url == "about:blank")) { throw "initial tab url should always be about:blank"; }
 		var window = windows.open({'url': tab.url, 'isPrivate': privateBrowsing.isPrivate(tab) });
-
+		
+		// tear off tab and put it on the new window
+		tab.setWindow(window, 0);
+		
+		/*
 		// > Properties relating to the tab's content (for example: title, favicon, and url) will not be
 		// > correct at this point. If you need to access these properties, listen for the ready event:
 		// The 'ready' event happens after the page has been downloaded but before its requisites have been.
@@ -83,6 +91,7 @@ exports.main = function(){
 			// ii. cancel the new tab
 			tab.close();
 		});
+		*/
 	});
 	
 	// next step: can I edit the XUL stylesheet from here?
