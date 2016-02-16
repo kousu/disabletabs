@@ -63,10 +63,11 @@ Everytime you sign it you need to bump the version number: AMO remembers every v
 TODO
 ----
 
-* [ ] The Double Download Bug
+* [x] The Double Download Bug
   - Because .ready doesn't fire until after it's downloaded a page, we are downloading pages twice
-* [ ] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
+* [x?] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
 * [ ] Need a new logo
+* [ ] Check compatibility with multiprocess Firefox; our package.json claims compatibility, but we use the low level API, but we only use it a little bit
 
 License
 ---
