@@ -73,21 +73,15 @@ TODO
 * [x?] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
 * [ ] Need a new logo
 * [ ] Check compatibility with multiprocess Firefox; our package.json claims compatibility, but we use the low level API, but we only use it a little bit
-* [ ] BUG: window.onopen is missed in some cases
-  * If I have "Open new windows in a new tab instead" off (i.e. browser.link.open_newwindow = 2)
-    and I click on a link with `target="_blank"`
-    then a) I don't receive a windows.on('open') so I can't remove the tabbar!! -- this has gotta be a bug!
-    Here's what I see when I click such a link:
-```
-console.log: disabletabs: tabs.ready: [object Object]
-console.log: disabletabs: tabs.load: [object Object]
-```
-   notice: no windows.* event firing, and tabs.open isn't firing (because tabs.open doesn't fire when its the first tab on a window..)
+* [ ] BUG: window.on('open') doesn't get called in some cases
+  * These cases are apparently entirely when there's a target= attribute set
+  * Workaround: set "Open new windows in a new tab instead" off (i.e. browser.link.open_newwindow = 3)
+  * This is an SDK bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1248724
 * [x] BUG: sometimes pages go blank and don't come back -- though the tab-group pane (ctrl-shift-e) still displays their content
   * Is it as simple as an uncaught exception? One that, since it's crashing in the XUL layer, snipes the whole page?
   * It's reliably triggered by "Search <engine> for <linktext>" in the context menu
 * [ ] See if it's possible to `display: none` the menu, context, and preference items that reference tabs as well
-* [ ] Read browser.tabs.loadInBackground (aka "When I open a link in a new tab, switch to it immediately") and replicate it by window.focus()
+* [ ] Read browser.tabs.loadInBackground (aka "When I open a link in a new tab, switch to it immediately") and replicate it by window.activate()
   * - then distribute documentation on how to no_focus in i3 and other tiling window managers so that *only* those winodws have this behaviour
 
 
