@@ -72,6 +72,8 @@ TODO
 * [x?] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
 * [ ] Need a new logo
 * [ ] Check compatibility with multiprocess Firefox; our package.json claims compatibility, but we use the low level API, but we only use it a little bit
+* [ ] BUG: window.onopen is missed in some cases
+  * Reliably triggered by clicking the "See full validation report" link when uploaded addon to AMO (e.g. maybe any javascript-spawned popup will do it?)
 * [x] BUG: sometimes pages go blank and don't come back -- though the tab-group pane (ctrl-shift-e) still displays their content
   * Is it as simple as an uncaught exception? One that, since it's crashing in the XUL layer, snipes the whole page?
   * It's reliably triggered by "Search <engine> for <linktext>" in the context menu

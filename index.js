@@ -28,6 +28,8 @@ function remove_tabbar(window) {
 	tabbar.updateVisibility = function() { this.visible = false; }
 	tabbar.updateVisibility();
 	
+	// it would be better to override updateVisibility in a prototype, but which one? Does this internal code use prototypes?
+	
 	// It would be better to attach a stylesheet to XUL that says ".tabbrowser-tabs { display: none }"
 	// and I only want to do that once, at module load. but I don't know how to do that.
 	// further, since my previous method caused page crashes a global stylesheet with equivalent CSS probably would too
@@ -56,4 +58,5 @@ exports.main = function(){
 	});
 	
 	windows.on('open', remove_tabbar);
+	windows.on('activate', remove_tabbar); // defensive coding
 };
