@@ -1,9 +1,9 @@
 
 
-var tabs = require('sdk/tabs');
-var windows = require('sdk/windows').browserWindows;
-var notifications = require('sdk/notifications');
-var privateBrowsing = require('sdk/private-browsing');
+let tabs = require('sdk/tabs');
+let windows = require('sdk/windows').browserWindows;
+let notifications = require('sdk/notifications');
+let privateBrowsing = require('sdk/private-browsing');
 
 // these translate between the chrome (aka XUL) elements and the internal objects
 // the chrome elements are /views/ of the internal /model/ objects
@@ -41,6 +41,17 @@ function remove_tabbar(window) {
 }
 
 
+/* monkey-patch (model-side) Tab objects to have a "detach" method which puts tears it off its current window and moves it to a new one.
+ * if the tab is the only one on the current window it is not moved .
+ * private browsing is preserved: if this.window is a private browsing window, so will the new window be.
+ *
+ * this is just a more convenient XULBrowser.replaceTabWithWindow()
+ */
+require("sdk/tabs/tab").Tab.prototype.detach = function() {
+        // ((the single-tab check is handled by replaceTabWithWindow, so we don't need to do it))
+	viewFor(this.window).gBrowser.replaceTabWithWindow(viewFor(this));
+}
+
 exports.main = function(){
 	// run this on any windows open at boot, because the first windows
 	// don't trigger the 'open' event, at least on Firefox 44.
@@ -48,13 +59,15 @@ exports.main = function(){
 		remove_tabbar(w);
 	}
 
-	tabs.on('open', function(tab){
-		// this is *not* triggered on opening a new window, only on opening a second tab in that window
-		// which means that we can *assume* this code is running in an unwanted new tab
-		
-		// translate new tab -> new window
-		// private browsing is preserved: if tab.window is a private browsing window, so will the new window be.
-		viewFor(tab.window).gBrowser.replaceTabWithWindow(viewFor(tab));
+	tabs.on('open', function(tab) {
+		if(tab.window.tabs.length > 1) {
+			// Quirk: this is *not* triggered on opening a new window, only on opening a second tab in that window
+			// which means that we could assume this code is running in an unwanted new tab
+			// but I don't trust assuming that: it seems like the correct API is that every new page triggers a tabs.open
+			
+			// translate new tab -> new window
+			tab.detach();
+		}
 	});
 	
 	windows.on('open', remove_tabbar);
