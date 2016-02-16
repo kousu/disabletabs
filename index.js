@@ -18,6 +18,7 @@ const { modelFor } = require("sdk/model/core");
 const { viewFor } = require("sdk/view/core");
 const { getTabContainer } = require("sdk/tabs/utils");
 
+//require("experiments/test-buttons.js");
 
 function remove_tabbar(window) {
 	// this gets the .tabbrowser-tabs element that is defined in chrome://browser/content/tabbrowser.xml
@@ -52,4 +53,4 @@ exports.main = function(){
 
 
 
-//require("experiments/test-buttons.js");
+
