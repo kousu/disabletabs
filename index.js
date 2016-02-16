@@ -43,6 +43,7 @@ exports.main = function(){
 		// which means that we can *assume* this code is running in an unwanted new tab
 		
 		// translate new tab -> new window
+		// private browsing is preserved: if tab.window is a private browsing window, so will the new window be.
 		viewFor(tab.window).gBrowser.replaceTabWithWindow(viewFor(tab));
 	});
 	
