@@ -72,9 +72,13 @@ TODO
 * [x?] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
 * [ ] Need a new logo
 * [ ] Check compatibility with multiprocess Firefox; our package.json claims compatibility, but we use the low level API, but we only use it a little bit
-* [ ] BUG: sometimes pages go blank and don't come back -- though the tab-group pane (ctrl-shift-e) still displays their content
+* [x] BUG: sometimes pages go blank and don't come back -- though the tab-group pane (ctrl-shift-e) still displays their content
   * Is it as simple as an uncaught exception? One that, since it's crashing in the XUL layer, snipes the whole page?
+  * It's reliably triggered by "Search <engine> for <linktext>" in the context menu
 * [ ] See if it's possible to `display: none` the menu, context, and preference items that reference tabs as well
+* [ ] Read browser.tabs.loadInBackground (aka "When I open a link in a new tab, switch to it immediately") and replicate it by window.focus()
+  * - then distribute documentation on how to no_focus in i3 and other tiling window managers so that *only* those winodws have this behaviour
+
 
 License
 ---

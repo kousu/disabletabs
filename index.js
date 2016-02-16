@@ -22,12 +22,20 @@ const { getTabContainer } = require("sdk/tabs/utils");
 
 function remove_tabbar(window) {
 	// this gets the .tabbrowser-tabs element that is defined in chrome://browser/content/tabbrowser.xml
-	var c = getTabContainer(viewFor(window));
+	// and hides it (well, actually, makes sure that whenever it tries to show itself it actually hides itself)
+	// // this trick ported from a XUL overlay in @Chris000001's [hide tab bar](https://addons.mozilla.org/en-US/firefox/addon/hide-tab-bar-with-one-tab/).
+	let tabbar = getTabContainer(viewFor(window));
+	tabbar.updateVisibility = function() { this.visible = false; }
+	tabbar.updateVisibility();
 	
-	// And this axes the tabbar on it.
-	//   I'm not totally sure why this works, since I'd expect this to hide the *entire* Window,
-	//   since you'd think a tabcontainer would contain tabs, but apparently not.
-	c.style.display = "none";
+	// It would be better to attach a stylesheet to XUL that says ".tabbrowser-tabs { display: none }"
+	// and I only want to do that once, at module load. but I don't know how to do that.
+	// further, since my previous method caused page crashes a global stylesheet with equivalent CSS probably would too
+
+	// Previous method: use CSS to remove the tab bar
+	// in obscure cases, like using "Search <engine> for <linktext>", this causes a page to crash hard:
+	// it stops rendering and may or may not be responding to input.
+	//c.style.display = "none";
 }
 
 
