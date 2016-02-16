@@ -32,7 +32,7 @@ Then:
 - To install, tell Firefox to open it: `firefox disable_tabs-1.3.0-fx.xpi`
  - Firefox is picky about this: it won't accept this as a `file://` URL, it won't accept it if you paste the path into the address bar, and it won't accept it if there's `../`s in the path. It will accept it from `http://localhost:8000/` but you need to whitelist localhost first(TODO: confirm this).
 
-When packaging, be aware of the `[.jpmignore](https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#Using_.jpmignore_to_ignore_files)` file: don't publish passwords or test code!
+When packaging, be aware of the [`.jpmignore`](https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#Using_.jpmignore_to_ignore_files) file: don't publish passwords or test code!
 
 
 
