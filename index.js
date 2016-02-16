@@ -1,9 +1,10 @@
 
 
-let tabs = require('sdk/tabs');
-let windows = require('sdk/windows').browserWindows;
-let notifications = require('sdk/notifications');
-let privateBrowsing = require('sdk/private-browsing');
+const tabs = require('sdk/tabs');
+const windows = require('sdk/windows').browserWindows;
+const notifications = require('sdk/notifications');
+const privateBrowsing = require('sdk/private-browsing');
+const config = require('sdk/preferences/service')
 
 // these translate between the chrome (aka XUL) elements and the internal objects
 // the chrome elements are /views/ of the internal /model/ objects
@@ -61,7 +62,7 @@ exports.main = function(){
 
 	// Set "Open new windows in a new tab instead". Messing with global prefs is probably frowned upon, but since this is Disable Tabs, everything to do with tabs should be fair game.
 	// This *sidesteps* but does not solve or really deal with at all the problem (bug?) that windows.on('open') doesn't trigger for new windows.
-	require('sdk/preferences/service').set('browser.link.open_newwindow', 3);
+	config.set('browser.link.open_newwindow', 3);
 
 	tabs.on('open', function(tab) {
 		if(tab.window.tabs.length > 1) {
