@@ -59,6 +59,10 @@ exports.main = function(){
 		remove_tabbar(w);
 	}
 
+	// Set "Open new windows in a new tab instead". Messing with global prefs is probably frowned upon, but since this is Disable Tabs, everything to do with tabs should be fair game.
+	// This *sidesteps* but does not solve or really deal with at all the problem (bug?) that windows.on('open') doesn't trigger for new windows.
+	require('sdk/preferences/service').set('browser.link.open_newwindow', 3);
+
 	tabs.on('open', function(tab) {
 		if(tab.window.tabs.length > 1) {
 			// Quirk: this is *not* triggered on opening a new window, only on opening a second tab in that window
