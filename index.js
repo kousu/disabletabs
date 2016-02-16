@@ -71,7 +71,16 @@ exports.main = function(){
 			// but I don't trust assuming that: it seems like the correct API is that every new page triggers a tabs.open
 			
 			// translate new tab -> new window
+			let original_window = tab.window;
 			tab.detach();
+			
+			// and focus the new window, if "when I open a link in a new tab, switch to it immediately"
+			if(!config.get('browser.tabs.loadInBackground')) {
+				tab.on('ready', function() { tab.activate(); });
+			} else {
+				// bah, this doesn't work, at least not under i3.
+				original_window.activate();
+			}
 		}
 	});
 	
