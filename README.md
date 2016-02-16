@@ -67,13 +67,16 @@ Everytime you sign it you need to bump the version number: AMO remembers every v
 TODO
 ----
 
+* [ ] On init, detach all tabs -- otherwise enabling/installing the extension during an active session can lead to lost tabs
 * [x] The Double Download Bug
   - Because .ready doesn't fire until after it's downloaded a page, we are downloading pages twice
 * [x?] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
 * [ ] Need a new logo
 * [ ] Check compatibility with multiprocess Firefox; our package.json claims compatibility, but we use the low level API, but we only use it a little bit
 * [ ] BUG: window.onopen is missed in some cases
-  * Reliably triggered by clicking the "See full validation report" link when uploaded addon to AMO (e.g. maybe any javascript-spawned popup will do it?)
+  * If I have "Open new windows in a new tab instead" off (i.e. browser.link.open_newwindow = 2)
+    and I click on a link with `target="_blank"`
+    then a) I don't receive a windows.on('open') so I can't remove the tabbar!! -- this has gotta be a bug!
 * [x] BUG: sometimes pages go blank and don't come back -- though the tab-group pane (ctrl-shift-e) still displays their content
   * Is it as simple as an uncaught exception? One that, since it's crashing in the XUL layer, snipes the whole page?
   * It's reliably triggered by "Search <engine> for <linktext>" in the context menu

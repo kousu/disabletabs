@@ -59,4 +59,23 @@ exports.main = function(){
 	
 	windows.on('open', remove_tabbar);
 	windows.on('activate', remove_tabbar); // defensive coding
+	
+	tabs.on('open', function(tab) {
+		console.log("tabs.open: " + tab);
+	});
+	windows.on('open', function(window) {
+		console.log("windows.open: " + window);
+	});
+	tabs.on('ready', function(tab) {
+		console.log("tabs.ready: " + tab);
+	});
+	windows.on('ready', function(window) {
+		console.log("windows.ready: " + window);
+	});
+	tabs.on('load', function(tab) {
+		console.log("tabs.load: " + tab);
+	});
+	windows.on('load', function(window) {
+		console.log("windows.load: " + window);
+	});
 };
