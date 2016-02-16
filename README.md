@@ -74,6 +74,7 @@ TODO
 * [ ] Check compatibility with multiprocess Firefox; our package.json claims compatibility, but we use the low level API, but we only use it a little bit
 * [ ] BUG: sometimes pages go blank and don't come back -- though the tab-group pane (ctrl-shift-e) still displays their content
   * Is it as simple as an uncaught exception? One that, since it's crashing in the XUL layer, snipes the whole page?
+* [ ] See if it's possible to `display: none` the menu, context, and preference items that reference tabs as well
 
 License
 ---
