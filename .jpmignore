@@ -18,6 +18,8 @@ api_secret.txt
 # Project documents
 *.log
 *.md
-experiments/
 releases/
 *.xpi
+
+# note that in order to use require('experiments/<something>.js') in your code, this *must be commented out*
+experiments/
