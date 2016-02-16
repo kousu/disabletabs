@@ -8,11 +8,16 @@
 .git
 .gitignore
 
-# Others
-*.xpi
-*.log
-*.md
+#
+Makefile
 
 # Our Mozilla signing API key
 # TODO: put this under ~/.config/jpm/
 api_secret.txt
+
+# Project documents
+*.log
+*.md
+experiments/
+releases/
+*.xpi
