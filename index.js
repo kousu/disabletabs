@@ -48,10 +48,4 @@ exports.main = function(){
 	});
 	
 	windows.on('open', remove_tabbar);
-	windows.on('activate', remove_tabbar); // this is defensive coding: sometimes the 'open' event doesn't trigger (e.g. clicking a developer's name in about:addons).
-	                                       // these are bugs in the Firefox SDK, as far as I'm concerned, but I have to work around them. by catching 'activate' at least the bar will blip away quickly enough.
 };
-
-
-
-
