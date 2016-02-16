@@ -136,31 +136,19 @@ exports.main = function(){
 	                                       // these are bugs in the Firefox SDK, as far as I'm concerned, but I have to work around them. by catching 'activate' at least the bar will blip away quickly enough.
 };
 
-var stop = false;
+
 
 
 const { getMostRecentBrowserWindow, windows: getWindows, getXULWindow } = require("sdk/window/utils");
 
+const { getMostRecentBrowserWindow } = require("sdk/window/utils");
 const { ActionButton } = require("sdk/ui/button/action");
 
 var button = ActionButton({
-  id: "duplicatetab-button",
-  label: "Duplicate tab",
+  id: "tearofftabtab-button",
+  label: "Tear Off Current Tab",
   icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACUElEQVQ4jaWTTWtTURCGjzc33CCpbVKN4kexC9EUY1Hov+iqPyDrbgtuCrViKUERqsWVguBGQaW4UiKiaEVxoShFGgnuBMUqNW3zce49Z+ZxUWtwoRR8YXbzPswM7xj+JgVEiXGsYVknxgII4Ltt5p8AB8RArOAUVQfqQJNtAFA8QgvF6i9PR1Dt0KbVBTjncM4hIni/OZv3HsRB+wvefiP2LcQnJIkQe49FEJFNQLPZZHh4mEwmQyqVoqenh3K5TGvlK1dOlageH+HG4DFar1/S0A6Lr99xdN8QxWKRXC6HGR0dJZvNMjk5Sb1ep1gskk6nuTo/D+/ec7dvkBdhP9cKeX7UXxEZQ2/YRxRFLC8vY+bm5qhUKnjvsdYyPj5OFEWcnTnHujiS5TfcPDbAw50h9w7u5f7UadLZFLVaDRHBiGzuY61lbGyMXC5HoVBgrbGGWAW/TvvxHR7s7udFKs/1oyfZ+PSRTqeDqm7eoFqtEoYhmUyG2dlZVJU4iREfI/WP3Nt9iMUdu7jdf5Anly5i0oaVlRWazSZmYWGBIAiIoohyucz09DQTExPMnJli9dlT5vcM8Kh3gFsHDuNqb9mb7yXMRBhjWFpawpRKJVKpFMYYgiAgDEOCIOD81BkunBjh8pEhKqUhGkvP6bQ/U//wgUP5/YRhSDabxbTbbVQV5xyq2q0kgR8NdOM7JKuo/Y5qggqIdPvMlnkrQCKCquJFsOrxeHAJxA48eFU6Xv4EqOpv41YqnQirqliv4MEmQtN7RBSs7wL+/gvb038DfgJnyUabbHzUbQAAAABJRU5ErkJggg==",
   onClick: function() {
-    console.log("clickclick");
-    var xulwindows = getWindows("navigator:browser");
-    //console.log("xulwindows");
-    var xulactivewindow = getMostRecentBrowserWindow();
-    //console.log(xulactivewindow);
-    var xulactivetab = xulactivewindow.gBrowser.selectedTab;
-    console.log(xulactivewindow.gBrowser);
-
-    xulwindows.forEach(function(win){
-      if(win === xulactivewindow)
-        return;
-      var duplicatedtab = win.gBrowser.duplicateTab(xulactivetab);
-      win.gBrowser.moveTabTo(duplicatedtab, 0); // the second argument is the index
-    });
+    getMostRecentBrowserWindow().gBrowser.replaceTabWithWindow(getMostRecentBrowserWindow().gBrowser.selectedTab);
   }
 });
