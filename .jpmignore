@@ -23,3 +23,5 @@ releases/
 
 # note that in order to use require('experiments/<something>.js') in your code, this *must be commented out*
 experiments/
+
+tests/

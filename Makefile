@@ -2,7 +2,7 @@
 all: package
 
 test:
-	jpm run -b `which firefox` --binary-args "github.com"
+	jpm run -b `which firefox` --binary-args "tests/_blank.html"
 
 package:
 	jpm xpi -v

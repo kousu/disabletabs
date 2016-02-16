@@ -77,6 +77,12 @@ TODO
   * If I have "Open new windows in a new tab instead" off (i.e. browser.link.open_newwindow = 2)
     and I click on a link with `target="_blank"`
     then a) I don't receive a windows.on('open') so I can't remove the tabbar!! -- this has gotta be a bug!
+    Here's what I see when I click such a link:
+```
+console.log: disabletabs: tabs.ready: [object Object]
+console.log: disabletabs: tabs.load: [object Object]
+```
+   notice: no windows.* event firing, and tabs.open isn't firing (because tabs.open doesn't fire when its the first tab on a window..)
 * [x] BUG: sometimes pages go blank and don't come back -- though the tab-group pane (ctrl-shift-e) still displays their content
   * Is it as simple as an uncaught exception? One that, since it's crashing in the XUL layer, snipes the whole page?
   * It's reliably triggered by "Search <engine> for <linktext>" in the context menu
@@ -91,3 +97,9 @@ License
 [MPL 2.0](https://www.mozilla.org/MPL/2.0/).
 
 Based on @cheeaun's [maxtabs](https://github.com/cheeaun/max-tabs) and @Chris000001's [hide tab bar](https://addons.mozilla.org/en-US/firefox/addon/hide-tab-bar-with-one-tab/). Thanks to @noitidart for [XUL help](https://discourse.mozilla-community.org/t/tear-off-tab-with-sdk/7085).
+
+
+Alternatives
+---
+
+* [Tab Killer](https://addons.mozilla.org/en-US/firefox/addon/tab-killer) -- unmaintained since 2007
