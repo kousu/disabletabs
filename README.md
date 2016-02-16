@@ -14,7 +14,7 @@ Download
 
 (published version coming Real Soon Now, 'soons I work out the kinks and get it through AMO security review).
 
-You can also build it yourself.
+You can also build and install it yourself.
 
 Development
 ---
@@ -28,7 +28,9 @@ $ sudo npm install --global jpm
 Then:
 - `make test` - Run the extension on Firefox (stable) with a new temporary profile, and with `console.log()` directed to stdout.
 - `make package` - Package the extension into an XPI file.
-- `make signed` - Get the package signed. Requires [AMO](https://addons.mozilla.org) credentials in `api_secret.txt`.
+- `make signed` - Package and sign the extension into an XPI file. Requires [AMO](https://addons.mozilla.org) credentials in `api_secret.txt`.
+- to install, tell Firefox to open it: `firefox disable_tabs@1.3.1.xpi`
+ - Firefox is picky about this: it won't accept this as a `file://` URL, and it won't accept it if there's `../`s in the path. It will accept it from `http://localhost:8000/` but you need to whitelist that site first(TODO: confirm this).
 
 When packaging, be aware of the `[.jpmignore](https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#Using_.jpmignore_to_ignore_files)` file: don't publish passwords or test code!
 
