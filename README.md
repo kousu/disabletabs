@@ -88,6 +88,9 @@ TODO
   * I think I did this, but it doesn't work on my system. Maybe i3 is overriding .focus() events?
 * [ ] SDK bug: after .detach(), tabs.activeTab is set to the newly detached tab, *even if it doesn't have the focus*. You have to switch to another window and switch back to set it correct.
 * [ ] Is there a way to catch the extension being disabled? I would like to undo my remove_tabbar hack in that case, see.
+* [ ] If the "Firefox has prevented this redirect" warning triggers, it sticks on the first window then immediately vanishes instead of following the tab to the second, so then it just seems like disabletabs broke the link.
+  -- I guess the warning's DOM element is attached to the window instead of the tab
+  -- frankly, I think this is a bug in the browser, not here
 
 License
 ---
