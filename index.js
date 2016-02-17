@@ -93,33 +93,31 @@ for(let w of windows) {
 	remove_tabbar(w);
 }
 
-exports.main = function(){
-
-	// Set "Open new windows in a new tab instead". Messing with global prefs is probably frowned upon, but since this is Disable Tabs, everything to do with tabs should be fair game.
-	// This *sidesteps* but does not solve or really deal with at all the problem (bug?) that windows.on('open') doesn't trigger for new windows.
-	config.set('browser.link.open_newwindow', 3);
+// Set "Open new windows in a new tab instead". Messing with global prefs is probably frowned upon, but since this is Disable Tabs, everything to do with tabs should be fair game.
+// This *sidesteps* but does not solve or really deal with at all the problem (bug?) that windows.on('open') doesn't trigger for new windows.
+config.set('browser.link.open_newwindow', 3);
 
 	tabs.on('open', function(tab) {
-		if(tab.window.tabs.length > 1) {
-			// Quirk: this is *not* triggered on opening a new window, only on opening a second tab in that window
-			// which means that we could assume this code is running in an unwanted new tab
-			// but I don't trust assuming that: it seems like the correct API is that every new page triggers a tabs.open
-			
-			// translate new tab -> new window
-			let original_window = tab.window;
-			tab.detach();
-			
-			// and focus the new window, if "when I open a link in a new tab, switch to it immediately"
-			if(!config.get('browser.tabs.loadInBackground')) {
-				tab.on('ready', function() { tab.activate(); });
-			} else {
-				// bah, this doesn't work, at least not under i3.
-				// Q: this should be the same as viewFor(original_window).focus(). Is it?
-				original_window.activate();
-			}
+	if(tab.window.tabs.length > 1) {
+		// Quirk: this is *not* triggered on opening a new window, only on opening a second tab in that window
+		// which means that we could assume this code is running in an unwanted new tab
+		// but I don't trust assuming that: it seems like the correct API is that every new page triggers a tabs.open
+		
+		// translate new tab -> new window
+		let original_window = tab.window;
+		tab.detach();
+		
+		// and focus the new window, if "when I open a link in a new tab, switch to it immediately"
+		if(!config.get('browser.tabs.loadInBackground')) {
+			tab.on('ready', function() { tab.activate(); });
+		} else {
+			// bah, this doesn't work, at least not under i3.
+			// Q: this should be the same as viewFor(original_window).focus(). Is it?
+			original_window.activate();
 		}
-	});
-	
-	windows.on('open', remove_tabbar);
-	windows.on('activate', remove_tabbar); // defensive coding
-};
+	}
+});
+
+windows.on('open', remove_tabbar);
+windows.on('activate', remove_tabbar); // defensive coding
+
