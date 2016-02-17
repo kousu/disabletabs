@@ -113,6 +113,7 @@ exports.main = function(){
 				tab.on('ready', function() { tab.activate(); });
 			} else {
 				// bah, this doesn't work, at least not under i3.
+				// Q: this should be the same as viewFor(original_window).focus(). Is it?
 				original_window.activate();
 			}
 		}
@@ -120,23 +121,4 @@ exports.main = function(){
 	
 	windows.on('open', remove_tabbar);
 	windows.on('activate', remove_tabbar); // defensive coding
-	
-	tabs.on('open', function(tab) {
-		console.log("tabs.open: " + tab);
-	});
-	windows.on('open', function(window) {
-		console.log("windows.open: " + window);
-	});
-	tabs.on('ready', function(tab) {
-		console.log("tabs.ready: " + tab);
-	});
-	windows.on('ready', function(window) {
-		console.log("windows.ready: " + window);
-	});
-	tabs.on('load', function(tab) {
-		console.log("tabs.load: " + tab);
-	});
-	windows.on('load', function(window) {
-		console.log("windows.load: " + window);
-	});
 };

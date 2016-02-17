@@ -67,6 +67,7 @@ Everytime you sign it you need to bump the version number: AMO remembers every v
 TODO
 ----
 
+* [ ] At boot the tab bar displays, because main() doesn't run fast enough. Is there anything I can do about this?
 * [ ] On init, detach all tabs -- otherwise enabling/installing the extension during an active session can lead to lost tabs
 * [x] The Double Download Bug
   - Because .ready doesn't fire until after it's downloaded a page, we are downloading pages twice
