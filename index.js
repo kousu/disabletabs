@@ -42,16 +42,50 @@ function remove_tabbar(window) {
 }
 
 
-/* monkey-patch (model-side) Tab objects to have a "detach" method which puts tears it off its current window and moves it to a new one.
- * if the tab is the only one on the current window it is not moved .
- * private browsing is preserved: if this.window is a private browsing window, so will the new window be.
+///////////  monkey-patch (model-side) Tab objects to be better ////////////////
+
+/* Tab.detach(): tear off this tab and spawn a new window just for it.
  *
- * this is just a more convenient XULBrowser.replaceTabWithWindow()
+ * If the tab is the only one on its window nothing happens.
+ * Private browsing is preserved: if this.window is a private browsing window, so is will the new window be.
  */
 require("sdk/tabs/tab").Tab.prototype.detach = function() {
         // ((the single-tab check is handled by replaceTabWithWindow, so we don't need to do it))
+	// ((as is the preservation of private browsing ))
+	// ((really this is just a Jetpack SDK-friendly wrapper for XUL's replaceTabWithWindow())
 	viewFor(this.window).gBrowser.replaceTabWithWindow(viewFor(this));
 }
+
+/* Tab.setWindow(window): Move tab to the given window.
+ *
+ * window should be a 'high level' or 'model' window object from the https://developer.mozilla.org/en-US/Add-ons/SDK/High-Level_APIs/windows module.
+ * If window is null, a new window is created.
+ *
+ * precondition: unless it's null, window has passed the 'open' state
+ *   That is, you cannot call this on a newly created window.
+ *   
+ *   Incorrect:
+ *   > tab.setWindow(windows.open("about:blank"));
+ *   ( causes TypeError: viewFor(...).gBrowser is undefined )
+ *
+ *   Correct:
+ *   > let win = windows.open("about:blank");
+ *   > win.on('on', function() {
+ *   >   tab.setWindow(win)
+ *   > }));
+ *
+ * XXX how does this interact with private browsing? This could be bad...
+ * XXX write a similar method attached to the Window prototype: window.adopt(tab)
+ */
+require("sdk/tabs/tab").Tab.prototype.setWindow = function(window, index = -1) {
+	console.log("index = " + index);
+	if(window) {
+		viewFor(window).gBrowser.tabContainer.appendChild(viewFor(this));
+	} else {
+		this.detach();
+	}
+}
+
 
 exports.main = function(){
 	// run this on any windows open at boot, because the first windows
