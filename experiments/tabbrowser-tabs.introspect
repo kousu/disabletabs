@@ -1,0 +1,1171 @@
+jpm run -b `which firefox` --binary-args "github.com"
+JPM [info] Starting jpm run on Disable Tabs
+JPM [info] Creating a new profile
+console.log: disabletabs: remove_tabbar
+console.log: disabletabs: properties of [object XULElement]:
+console.log: disabletabs: [object XULElement].tabbrowser = [object XULElement]
+console.log: disabletabs: [object XULElement].tabbox = [object XULElement]
+console.log: disabletabs: [object XULElement].mTabClipWidth = 140
+console.log: disabletabs: [object XULElement]._tabAnimationLoggingEnabled = false
+console.log: disabletabs: [object XULElement]._browserNewtabpageEnabled = true
+console.log: disabletabs: [object XULElement]._container = [object XULElement]
+console.log: disabletabs: [object XULElement]._propagatedVisibilityOnce = true
+console.log: disabletabs: [object XULElement].mTabstrip = [object XULElement]
+console.log: disabletabs: [object XULElement].mTabstripWidth = 1440
+console.log: disabletabs: [object XULElement]._isCustomizing = false
+console.log: disabletabs: [object XULElement]._setPositionalAttributes = function _setPositionalAttributes() {
+
+          let visibleTabs = this.tabbrowser.visibleTabs;
+
+          if (!visibleTabs.length)
+            return;
+
+          let selectedIndex = visibleTabs.indexOf(this.selectedItem);
+
+          let lastVisible = visibleTabs.length - 1;
+
+          if (this._afterSelectedTab)
+            this._afterSelectedTab.removeAttribute("afterselected-visible");
+          if (this.selectedItem.closing || selectedIndex == lastVisible) {
+            this._afterSelectedTab = null;
+          } else {
+            this._afterSelectedTab = visibleTabs[selectedIndex + 1];
+            this._afterSelectedTab.setAttribute("afterselected-visible",
+                                                "true");
+          }
+
+          if (this._firstTab)
+            this._firstTab.removeAttribute("first-visible-tab");
+          this._firstTab = visibleTabs[0];
+          this._firstTab.setAttribute("first-visible-tab", "true");
+          if (this._lastTab)
+            this._lastTab.removeAttribute("last-visible-tab");
+          this._lastTab = visibleTabs[lastVisible];
+          this._lastTab.setAttribute("last-visible-tab", "true");
+
+          let hoveredTab = this._hoveredTab;
+          if (hoveredTab) {
+            hoveredTab._mouseleave();
+            hoveredTab._mouseenter();
+          }
+        
+}
+console.log: disabletabs: [object XULElement].visible = true
+console.log: disabletabs: [object XULElement]._enterNewTab = function _enterNewTab() {
+
+          let visibleTabs = this.tabbrowser.visibleTabs;
+          let candidate = visibleTabs[visibleTabs.length - 1];
+          if (!candidate.selected) {
+            this._beforeHoveredTab = candidate;
+            candidate.setAttribute("beforehovered", "true");
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._leaveNewTab = function _leaveNewTab() {
+
+          if (this._beforeHoveredTab) {
+            this._beforeHoveredTab.removeAttribute("beforehovered");
+            this._beforeHoveredTab = null;
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._propagateVisibility = function _propagateVisibility() {
+
+          let visible = this.visible;
+
+          document.getElementById("menu_closeWindow").hidden = !visible;
+          document.getElementById("menu_close").setAttribute("label",
+            this.tabbrowser.mStringBundle.getString(visible ? "tabs.closeTab" : "tabs.close"));
+
+          TabsInTitlebar.allowedBy("tabs-visible", visible);
+        
+}
+console.log: disabletabs: [object XULElement].updateVisibility = function updateVisibility() {
+
+          if (this.childNodes.length - this.tabbrowser._removingTabs.length == 1)
+            this.visible = window.toolbar.visible;
+          else
+            this.visible = true;
+        
+}
+console.log: disabletabs: [object XULElement].adjustTabstrip = function adjustTabstrip() {
+
+          let numTabs = this.childNodes.length -
+                        this.tabbrowser._removingTabs.length;
+          if (numTabs > 2) {
+            // This is an optimization to avoid layout flushes by calling
+            // getBoundingClientRect() when we just opened a second tab. In
+            // this case it's highly unlikely that the tab width is smaller
+            // than mTabClipWidth and the tab close button obscures too much
+            // of the tab's label. In the edge case of the window being too
+            // narrow (or if tabClipWidth has been set to a way higher value),
+            // we'll correct the 'closebuttons' attribute after the tabopen
+            // animation has finished.
+
+            let tab = this.tabbrowser.visibleTabs[this.tabbrowser._numPinnedTabs];
+            if (tab && tab.getBoundingClientRect().width <= this.mTabClipWidth) {
+              this.setAttribute("closebuttons", "activetab");
+              return;
+            }
+          }
+          this.removeAttribute("closebuttons");
+        
+}
+console.log: disabletabs: [object XULElement]._handleTabSelect = function _handleTabSelect(aSmoothScroll) {
+
+          if (this.getAttribute("overflow") == "true")
+            this.mTabstrip.ensureElementIsVisible(this.selectedItem, aSmoothScroll);
+        
+}
+console.log: disabletabs: [object XULElement]._fillTrailingGap = function _fillTrailingGap() {
+
+          try {
+            // if we're at the right side (and not the logical end,
+            // which is why this works for both LTR and RTL)
+            // of the tabstrip, we need to ensure that we stay
+            // completely scrolled to the right side
+            var tabStrip = this.mTabstrip;
+            if (tabStrip.scrollPosition + tabStrip.scrollClientSize >
+                tabStrip.scrollSize)
+              tabStrip.scrollByPixels(-1);
+          } catch (e) {}
+        
+}
+console.log: disabletabs: [object XULElement]._lockTabSizing = function _lockTabSizing(aTab) {
+
+          var tabs = this.tabbrowser.visibleTabs;
+          if (!tabs.length)
+            return;
+
+          var isEndTab = (aTab._tPos > tabs[tabs.length-1]._tPos);
+          var tabWidth = aTab.getBoundingClientRect().width;
+
+          if (!this._tabDefaultMaxWidth)
+            this._tabDefaultMaxWidth =
+              parseFloat(window.getComputedStyle(aTab).maxWidth);
+          this._lastTabClosedByMouse = true;
+
+          if (this.getAttribute("overflow") == "true") {
+            // Don't need to do anything if we're in overflow mode and aren't scrolled
+            // all the way to the right, or if we're closing the last tab.
+            if (isEndTab || !this.mTabstrip._scrollButtonDown.disabled)
+              return;
+
+            // If the tab has an owner that will become the active tab, the owner will
+            // be to the left of it, so we actually want the left tab to slide over.
+            // This can't be done as easily in non-overflow mode, so we don't bother.
+            if (aTab.owner)
+              return;
+
+            this._expandSpacerBy(tabWidth);
+          } else { // non-overflow mode
+            // Locking is neither in effect nor needed, so let tabs expand normally.
+            if (isEndTab && !this._hasTabTempMaxWidth)
+              return;
+
+            let numPinned = this.tabbrowser._numPinnedTabs;
+            // Force tabs to stay the same width, unless we're closing the last tab,
+            // which case we need to let them expand just enough so that the overall
+            // tabbar width is the same.
+            if (isEndTab) {
+              let numNormalTabs = tabs.length - numPinned;
+              tabWidth = tabWidth * (numNormalTabs + 1) / numNormalTabs;
+              if (tabWidth > this._tabDefaultMaxWidth)
+                tabWidth = this._tabDefaultMaxWidth;
+            }
+            tabWidth += "px";
+            for (let i = numPinned; i < tabs.length; i++) {
+              let tab = tabs[i];
+              tab.style.setProperty("max-width", tabWidth, "important");
+              if (!isEndTab) { // keep tabs the same width
+                tab.style.transition = "none";
+                tab.clientTop; // flush styles to skip animation; see bug 649247
+                tab.style.transition = "";
+              }
+            }
+            this._hasTabTempMaxWidth = true;
+            this.tabbrowser.addEventListener("mousemove", this, false);
+            window.addEventListener("mouseout", this, false);
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._expandSpacerBy = function _expandSpacerBy(pixels) {
+
+          let spacer = this._closingTabsSpacer;
+          spacer.style.width = parseFloat(spacer.style.width) + pixels + "px";
+          this.setAttribute("using-closing-tabs-spacer", "true");
+          this.tabbrowser.addEventListener("mousemove", this, false);
+          window.addEventListener("mouseout", this, false);
+        
+}
+console.log: disabletabs: [object XULElement]._unlockTabSizing = function _unlockTabSizing() {
+
+          this.tabbrowser.removeEventListener("mousemove", this, false);
+          window.removeEventListener("mouseout", this, false);
+
+          if (this._hasTabTempMaxWidth) {
+            this._hasTabTempMaxWidth = false;
+            let tabs = this.tabbrowser.visibleTabs;
+            for (let i = 0; i < tabs.length; i++)
+              tabs[i].style.maxWidth = "";
+          }
+
+          if (this.hasAttribute("using-closing-tabs-spacer")) {
+            this.removeAttribute("using-closing-tabs-spacer");
+            this._closingTabsSpacer.style.width = 0;
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._positionPinnedTabs = function _positionPinnedTabs() {
+
+          var numPinned = this.tabbrowser._numPinnedTabs;
+          var doPosition = this.getAttribute("overflow") == "true" &&
+                           numPinned > 0;
+
+          if (doPosition) {
+            this.setAttribute("positionpinnedtabs", "true");
+
+            let scrollButtonWidth = this.mTabstrip._scrollButtonDown.getBoundingClientRect().width;
+            let paddingStart = this.mTabstrip.scrollboxPaddingStart;
+            let width = 0;
+
+            for (let i = numPinned - 1; i >= 0; i--) {
+              let tab = this.childNodes[i];
+              width += tab.getBoundingClientRect().width;
+              tab.style.MozMarginStart = - (width + scrollButtonWidth + paddingStart) + "px";
+            }
+
+            this.style.MozPaddingStart = width + paddingStart + "px";
+
+          } else {
+            this.removeAttribute("positionpinnedtabs");
+
+            for (let i = 0; i < numPinned; i++) {
+              let tab = this.childNodes[i];
+              tab.style.MozMarginStart = "";
+            }
+
+            this.style.MozPaddingStart = "";
+          }
+
+          if (this._lastNumPinned != numPinned) {
+            this._lastNumPinned = numPinned;
+            this._handleTabSelect(false);
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._animateTabMove = function _animateTabMove(event) {
+
+          let draggedTab = event.dataTransfer.mozGetDataAt(TAB_DROP_TYPE, 0);
+
+          if (this.getAttribute("movingtab") != "true") {
+            this.setAttribute("movingtab", "true");
+            this.selectedItem = draggedTab;
+          }
+
+          if (!("animLastScreenX" in draggedTab._dragData))
+            draggedTab._dragData.animLastScreenX = draggedTab._dragData.screenX;
+
+          let screenX = event.screenX;
+          if (screenX == draggedTab._dragData.animLastScreenX)
+            return;
+
+          let draggingRight = screenX > draggedTab._dragData.animLastScreenX;
+          draggedTab._dragData.animLastScreenX = screenX;
+
+          let rtl = (window.getComputedStyle(this).direction == "rtl");
+          let pinned = draggedTab.pinned;
+          let numPinned = this.tabbrowser._numPinnedTabs;
+          let tabs = this.tabbrowser.visibleTabs
+                                    .slice(pinned ? 0 : numPinned,
+                                           pinned ? numPinned : undefined);
+          if (rtl)
+            tabs.reverse();
+          let tabWidth = draggedTab.getBoundingClientRect().width;
+
+          // Move the dragged tab based on the mouse position.
+
+          let leftTab = tabs[0];
+          let rightTab = tabs[tabs.length - 1];
+          let tabScreenX = draggedTab.boxObject.screenX;
+          let translateX = screenX - draggedTab._dragData.screenX;
+          if (!pinned)
+            translateX += this.mTabstrip.scrollPosition - draggedTab._dragData.scrollX;
+          let leftBound = leftTab.boxObject.screenX - tabScreenX;
+          let rightBound = (rightTab.boxObject.screenX + rightTab.boxObject.width) -
+                           (tabScreenX + tabWidth);
+          translateX = Math.max(translateX, leftBound);
+          translateX = Math.min(translateX, rightBound);
+          draggedTab.style.transform = "translateX(" + translateX + "px)";
+
+          // Determine what tab we're dragging over.
+          // * Point of reference is the center of the dragged tab. If that
+          //   point touches a background tab, the dragged tab would take that
+          //   tab's position when dropped.
+          // * We're doing a binary search in order to reduce the amount of
+          //   tabs we need to check.
+
+          let tabCenter = tabScreenX + translateX + tabWidth / 2;
+          let newIndex = -1;
+          let oldIndex = "animDropIndex" in draggedTab._dragData ?
+                         draggedTab._dragData.animDropIndex : draggedTab._tPos;
+          let low = 0;
+          let high = tabs.length - 1;
+          while (low <= high) {
+            let mid = Math.floor((low + high) / 2);
+            if (tabs[mid] == draggedTab &&
+                ++mid > high)
+              break;
+            let boxObject = tabs[mid].boxObject;
+            let screenX = boxObject.screenX + getTabShift(tabs[mid], oldIndex);
+            if (screenX > tabCenter) {
+              high = mid - 1;
+            } else if (screenX + boxObject.width < tabCenter) {
+              low = mid + 1;
+            } else {
+              newIndex = tabs[mid]._tPos;
+              break;
+            }
+          }
+          if (newIndex >= oldIndex)
+            newIndex++;
+          if (newIndex < 0 || newIndex == oldIndex)
+            return;
+          draggedTab._dragData.animDropIndex = newIndex;
+
+          // Shift background tabs to leave a gap where the dragged tab
+          // would currently be dropped.
+
+          for (let tab of tabs) {
+            if (tab != draggedTab) {
+              let shift = getTabShift(tab, newIndex);
+              tab.style.transform = shift ? "translateX(" + shift + "px)" : "";
+            }
+          }
+
+          function getTabShift(tab, dropIndex) {
+            if (tab._tPos < draggedTab._tPos && tab._tPos >= dropIndex)
+              return rtl ? -tabWidth : tabWidth;
+            if (tab._tPos > draggedTab._tPos && tab._tPos < dropIndex)
+              return rtl ? tabWidth : -tabWidth;
+            return 0;
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._finishAnimateTabMove = function _finishAnimateTabMove() {
+
+          if (this.getAttribute("movingtab") != "true")
+            return;
+
+          for (let tab of this.tabbrowser.visibleTabs)
+            tab.style.transform = "";
+
+          this.removeAttribute("movingtab");
+
+          this._handleTabSelect();
+        
+}
+console.log: disabletabs: [object XULElement].handleEvent = function handleEvent(aEvent) {
+
+          switch (aEvent.type) {
+            case "load":
+              this.updateVisibility();
+              break;
+            case "resize":
+              if (aEvent.target != window)
+                break;
+
+              TabsInTitlebar.updateAppearance();
+
+              var width = this.mTabstrip.boxObject.width;
+              if (width != this.mTabstripWidth) {
+                this.adjustTabstrip();
+                this._fillTrailingGap();
+                this._handleTabSelect();
+                this.mTabstripWidth = width;
+              }
+
+              this.tabbrowser.updateWindowResizers();
+              break;
+            case "mouseout":
+              // If the "related target" (the node to which the pointer went) is not
+              // a child of the current document, the mouse just left the window.
+              let relatedTarget = aEvent.relatedTarget;
+              if (relatedTarget && relatedTarget.ownerDocument == document)
+                break;
+            case "mousemove":
+              if (document.getElementById("tabContextMenu").state != "open")
+                this._unlockTabSizing();
+              break;
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._notifyBackgroundTab = function _notifyBackgroundTab(aTab) {
+
+          if (aTab.pinned)
+            return;
+
+          var scrollRect = this.mTabstrip.scrollClientRect;
+          var tab = aTab.getBoundingClientRect();
+          this.mTabstrip._calcTabMargins(aTab);
+
+          // DOMRect left/right properties are immutable.
+          tab = {left: tab.left, right: tab.right};
+
+          // Is the new tab already completely visible?
+          if (scrollRect.left <= tab.left && tab.right <= scrollRect.right)
+            return;
+
+          if (this.mTabstrip.smoothScroll) {
+            let selected = !this.selectedItem.pinned &&
+                           this.selectedItem.getBoundingClientRect();
+            if (selected) {
+              selected = {left: selected.left, right: selected.right};
+              // Need to take in to account the width of the left/right margins on tabs.
+              selected.left = selected.left + this.mTabstrip._tabMarginLeft;
+              selected.right = selected.right - this.mTabstrip._tabMarginRight;
+            }
+
+            tab.left += this.mTabstrip._tabMarginLeft;
+            tab.right -= this.mTabstrip._tabMarginRight;
+
+            // Can we make both the new tab and the selected tab completely visible?
+            if (!selected ||
+                Math.max(tab.right - selected.left, selected.right - tab.left) <=
+                  scrollRect.width) {
+              this.mTabstrip.ensureElementIsVisible(aTab);
+              return;
+            }
+
+            this.mTabstrip._smoothScrollByPixels(this.mTabstrip._isRTLScrollbox ?
+                                                 selected.right - scrollRect.right :
+                                                 selected.left - scrollRect.left);
+          }
+
+          if (!this._animateElement.hasAttribute("notifybgtab")) {
+            this._animateElement.setAttribute("notifybgtab", "true");
+            setTimeout(function (ele) {
+              ele.removeAttribute("notifybgtab");
+            }, 150, this._animateElement);
+          }
+        
+}
+console.log: disabletabs: [object XULElement]._getDragTargetTab = function _getDragTargetTab(event, isLink) {
+
+          let tab = event.target.localName == "tab" ? event.target : null;
+          if (tab && isLink) {
+            let boxObject = tab.boxObject;
+            if (event.screenX < boxObject.screenX + boxObject.width * .25 ||
+                event.screenX > boxObject.screenX + boxObject.width * .75)
+              return null;
+          }
+          return tab;
+        
+}
+console.log: disabletabs: [object XULElement]._getDropIndex = function _getDropIndex(event, isLink) {
+
+          var tabs = this.childNodes;
+          var tab = this._getDragTargetTab(event, isLink);
+          if (window.getComputedStyle(this, null).direction == "ltr") {
+            for (let i = tab ? tab._tPos : 0; i < tabs.length; i++)
+              if (event.screenX < tabs[i].boxObject.screenX + tabs[i].boxObject.width / 2)
+                return i;
+          } else {
+            for (let i = tab ? tab._tPos : 0; i < tabs.length; i++)
+              if (event.screenX > tabs[i].boxObject.screenX + tabs[i].boxObject.width / 2)
+                return i;
+          }
+          return tabs.length;
+        
+}
+console.log: disabletabs: [object XULElement]._getDropEffectForTabDrag = function _getDropEffectForTabDrag(event) {
+
+          var dt = event.dataTransfer;
+          // Disallow dropping multiple items
+          if (dt.mozItemCount > 1)
+            return "none";
+
+          var types = dt.mozTypesAt(0);
+          var sourceNode = null;
+          // tabs are always added as the first type
+          if (types[0] == TAB_DROP_TYPE) {
+            var sourceNode = dt.mozGetDataAt(TAB_DROP_TYPE, 0);
+            if (sourceNode instanceof XULElement &&
+                sourceNode.localName == "tab" &&
+                sourceNode.ownerDocument.defaultView instanceof ChromeWindow &&
+                sourceNode.ownerDocument.documentElement.getAttribute("windowtype") == "navigator:browser" &&
+                sourceNode.ownerDocument.defaultView.gBrowser.tabContainer == sourceNode.parentNode) {
+              // Do not allow transfering a private tab to a non-private window
+              // and vice versa.
+              if (PrivateBrowsingUtils.isWindowPrivate(window) !=
+                  PrivateBrowsingUtils.isWindowPrivate(sourceNode.ownerDocument.defaultView))
+                return "none";
+
+              if (window.gMultiProcessBrowser !=
+                  sourceNode.ownerDocument.defaultView.gMultiProcessBrowser)
+                return "none";
+
+              return dt.dropEffect == "copy" ? "copy" : "move";
+            }
+          }
+
+          if (browserDragAndDrop.canDropLink(event)) {
+            return "link";
+          }
+          return "none";
+        
+}
+console.log: disabletabs: [object XULElement]._handleNewTab = function _handleNewTab(tab) {
+
+          if (tab.parentNode != this)
+            return;
+          tab._fullyOpen = true;
+
+          this.adjustTabstrip();
+
+          if (tab.getAttribute("selected") == "true") {
+            this._fillTrailingGap();
+            this._handleTabSelect();
+          } else {
+            this._notifyBackgroundTab(tab);
+          }
+
+          // XXXmano: this is a temporary workaround for bug 345399
+          // We need to manually update the scroll buttons disabled state
+          // if a tab was inserted to the overflow area or removed from it
+          // without any scrolling and when the tabbar has already
+          // overflowed.
+          this.mTabstrip._updateScrollButtonsDisabledState();
+
+          // Preload the next about:newtab if there isn't one already.
+          this.tabbrowser._createPreloadBrowser();
+        
+}
+console.log: disabletabs: [object XULElement]._canAdvanceToTab = function _canAdvanceToTab(aTab) {
+
+        
+          return !aTab.closing;
+        
+        
+}
+console.log: disabletabs: [object XULElement]._handleTabTelemetryStart = function _handleTabTelemetryStart(aTab, aURI) {
+
+        
+          // Animation-smoothness telemetry/logging
+          if (Services.telemetry.canRecordExtended || this._tabAnimationLoggingEnabled) {
+            if (aURI == "about:newtab" && (aTab._tPos == 1 || aTab._tPos == 2)) {
+              // Indicate newtab page animation where other tabs are unaffected
+              // (for which case, the 2nd or 3rd tabs are good representatives, even if not absolute)
+              aTab._recordingTabOpenPlain = true;
+            }
+            aTab._recordingHandle = window.QueryInterface(Ci.nsIInterfaceRequestor)
+                                          .getInterface(Ci.nsIDOMWindowUtils)
+                                          .startFrameTimeRecording();
+          }
+
+          // Overall animation duration
+          aTab._animStartTime = Date.now();
+        
+        
+}
+console.log: disabletabs: [object XULElement]._handleTabTelemetryEnd = function _handleTabTelemetryEnd(aTab) {
+
+        
+          if (!aTab._animStartTime) {
+            return;
+          }
+
+          Services.telemetry.getHistogramById(aTab.closing ?
+                                              "FX_TAB_ANIM_CLOSE_MS" :
+                                              "FX_TAB_ANIM_OPEN_MS")
+                            .add(Date.now() - aTab._animStartTime);
+          aTab._animStartTime = 0;
+
+          // Handle tab animation smoothness telemetry/logging of frame intervals and paint times
+          if (!("_recordingHandle" in aTab)) {
+            return;
+          }
+
+          let intervals = window.QueryInterface(Ci.nsIInterfaceRequestor)
+                                .getInterface(Ci.nsIDOMWindowUtils)
+                                .stopFrameTimeRecording(aTab._recordingHandle);
+          delete aTab._recordingHandle;
+          let frameCount = intervals.length;
+
+          if (this._tabAnimationLoggingEnabled) {
+            let msg = "Tab " + (aTab.closing ? "close" : "open") + " (Frame-interval):\n";
+            for (let i = 0; i < frameCount; i++) {
+              msg += Math.round(intervals[i]) + "\n";
+            }
+            Services.console.logStringMessage(msg);
+          }
+
+          // For telemetry, the first frame interval is not useful since it may represent an interval
+          // to a relatively old frame (prior to recording start). So we'll ignore it for the average.
+          if (frameCount > 1) {
+            let averageInterval = 0;
+            for (let i = 1; i < frameCount; i++) {
+              averageInterval += intervals[i];
+            };
+            averageInterval = averageInterval / (frameCount - 1);
+
+            Services.telemetry.getHistogramById("FX_TAB_ANIM_ANY_FRAME_INTERVAL_MS").add(averageInterval);
+
+            if (aTab._recordingTabOpenPlain) {
+              delete aTab._recordingTabOpenPlain;
+              // While we do have a telemetry probe NEWTAB_PAGE_ENABLED to monitor newtab preview, it'll be
+              // easier to overview the data without slicing by it. Hence the additional histograms with _PREVIEW.
+              let preview = this._browserNewtabpageEnabled ? "_PREVIEW" : "";
+              Services.telemetry.getHistogramById("FX_TAB_ANIM_OPEN" + preview + "_FRAME_INTERVAL_MS").add(averageInterval);
+            }
+          }
+        
+        
+}
+console.log: disabletabs: [object XULElement].mAllTabsPopup = [object XULElement]
+console.log: disabletabs: [object XULElement].contextMenu = [object XULElement]
+console.log: disabletabs: [object XULElement]._firstTab = null
+console.log: disabletabs: [object XULElement]._lastTab = null
+console.log: disabletabs: [object XULElement]._afterSelectedTab = null
+console.log: disabletabs: [object XULElement]._beforeHoveredTab = null
+console.log: disabletabs: [object XULElement]._afterHoveredTab = null
+console.log: disabletabs: [object XULElement]._hoveredTab = null
+console.log: disabletabs: [object XULElement]._blockDblClick = false
+console.log: disabletabs: [object XULElement]._tabDropIndicator = [object XULElement]
+console.log: disabletabs: [object XULElement]._dragOverDelay = 350
+console.log: disabletabs: [object XULElement]._dragTime = 0
+console.log: disabletabs: [object XULElement]._closingTabsSpacer = [object XULElement]
+console.log: disabletabs: [object XULElement]._tabDefaultMaxWidth = NaN
+console.log: disabletabs: [object XULElement]._lastTabClosedByMouse = false
+console.log: disabletabs: [object XULElement]._hasTabTempMaxWidth = false
+console.log: disabletabs: [object XULElement]._lastNumPinned = 0
+console.log: disabletabs: [object XULElement]._animateElement = [object XULElement]
+console.log: disabletabs: [object XULElement].getRelatedElement = function getRelatedElement(aTabElm) {
+
+        
+          if (!aTabElm)
+            return null;
+
+          let tabboxElm = this.tabbox;
+          if (!tabboxElm)
+            return null;
+
+          let tabpanelsElm = tabboxElm.tabpanels;
+          if (!tabpanelsElm)
+            return null;
+
+          // Get linked tab panel by 'linkedpanel' attribute on the given tab
+          // element.
+          let linkedPanelElm = null;
+
+          let linkedPanelId = aTabElm.linkedPanel;
+          if (linkedPanelId) {
+            let ownerDoc = this.ownerDocument;
+
+            // XXX bug 565858: if XUL tab element is anonymous element then
+            // suppose linked tab panel is hosted within the same XBL binding
+            // and search it by ID attribute inside an anonymous content of
+            // the binding. This is not robust assumption since tab elements may
+            // live outside a tabbox element so that for example tab elements
+            // can be explicit content but tab panels can be anonymous.
+
+            let bindingParent = ownerDoc.getBindingParent(aTabElm);
+            if (bindingParent)
+              return ownerDoc.getAnonymousElementByAttribute(bindingParent,
+                                                             "id",
+                                                             linkedPanelId);
+
+            return ownerDoc.getElementById(linkedPanelId);
+          }
+
+          // otherwise linked tabpanel element has the same index as the given
+          // tab element.
+          let tabElmIdx = this.getIndexOfItem(aTabElm);
+          return tabpanelsElm.childNodes[tabElmIdx];
+        
+        
+}
+console.log: disabletabs: [object XULElement].itemCount = 1
+console.log: disabletabs: [object XULElement].value = 
+console.log: disabletabs: [object XULElement].selectedIndex = 0
+console.log: disabletabs: [object XULElement].selectedItem = [object XULElement]
+console.log: disabletabs: [object XULElement].getIndexOfItem = function getIndexOfItem(item) {
+
+        
+          return Array.indexOf(this.childNodes, item);
+        
+        
+}
+console.log: disabletabs: [object XULElement].getItemAtIndex = function getItemAtIndex(index) {
+
+        
+          return this.childNodes.item(index);
+        
+        
+}
+console.log: disabletabs: [object XULElement]._selectNewTab = function _selectNewTab(aNewTab, aFallbackDir, aWrap) {
+
+        
+          var requestedTab = aNewTab;
+          while (aNewTab.hidden || aNewTab.disabled || !this._canAdvanceToTab(aNewTab)) {
+            aNewTab = aFallbackDir == -1 ? aNewTab.previousSibling : aNewTab.nextSibling;
+            if (!aNewTab && aWrap)
+              aNewTab = aFallbackDir == -1 ? this.childNodes[this.childNodes.length - 1] :
+                                             this.childNodes[0];
+            if (!aNewTab || aNewTab == requestedTab)
+              return;
+          }
+
+          var isTabFocused = false;
+          try {
+            isTabFocused =
+              (document.commandDispatcher.focusedElement == this.selectedItem);
+          } catch (e) {}
+          this.selectedItem = aNewTab;
+          if (isTabFocused) {
+            aNewTab.focus();
+          }
+          else if (this.getAttribute("setfocus") != "false") {
+            let selectedPanel = this.tabbox.selectedPanel;
+            document.commandDispatcher.advanceFocusIntoSubtree(selectedPanel);
+
+            // Make sure that the focus doesn't move outside the tabbox
+            if (this.tabbox) {
+              try {
+                let el = document.commandDispatcher.focusedElement;
+                while (el && el != this.tabbox.tabpanels) {
+                  if (el == this.tabbox || el == selectedPanel)
+                    return;
+                  el = el.parentNode;
+                }
+                aNewTab.focus();
+              } catch(e) {
+              }
+            }
+          }
+        
+        
+}
+console.log: disabletabs: [object XULElement].advanceSelectedTab = function advanceSelectedTab(aDir, aWrap) {
+
+        
+          var startTab = this.selectedItem;
+          var next = startTab[aDir == -1 ? "previousSibling" : "nextSibling"];
+          if (!next && aWrap) {
+            next = aDir == -1 ? this.childNodes[this.childNodes.length - 1] :
+                                this.childNodes[0];
+          }
+          if (next && next != startTab) {
+            this._selectNewTab(next, aDir, aWrap);
+          }
+        
+        
+}
+console.log: disabletabs: [object XULElement].appendItem = function appendItem(label, value) {
+
+        
+          var XULNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+          var tab = document.createElementNS(XULNS, "tab");
+          tab.setAttribute("label", label);
+          tab.setAttribute("value", value);
+          this.appendChild(tab);
+          return tab;
+        
+        
+}
+console.log: disabletabs: [object XULElement].insertItemAt = function insertItemAt(index, label, value) {
+
+        
+          var XULNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+          var tab = document.createElementNS(XULNS, "tab");
+          tab.setAttribute("label", label);
+          tab.setAttribute("value", value);
+          var before = this.getItemAtIndex(index);
+          if (before)
+            this.insertBefore(tab, before);
+          else
+            this.appendChild(tab);
+          return tab;
+        
+        
+}
+console.log: disabletabs: [object XULElement].removeItemAt = function removeItemAt(index) {
+
+        
+          var remove = this.getItemAtIndex(index);
+          if (remove)
+            this.removeChild(remove);
+          return remove;
+        
+        
+}
+console.log: disabletabs: [object XULElement]._tabbox = [object XULElement]
+console.log: disabletabs: [object XULElement].disabled = false
+console.log: disabletabs: [object XULElement].tabIndex = 0
+console.log: disabletabs: [object XULElement].focus = function focus() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].blur = function blur() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].click = function click() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].doCommand = function doCommand() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getElementsByAttribute = function getElementsByAttribute() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getElementsByAttributeNS = function getElementsByAttributeNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].className = tabbrowser-tabs
+console.log: disabletabs: [object XULElement].align = 
+console.log: disabletabs: [object XULElement].dir = 
+console.log: disabletabs: [object XULElement].flex = 1
+console.log: disabletabs: [object XULElement].flexGroup = 
+console.log: disabletabs: [object XULElement].ordinal = 
+console.log: disabletabs: [object XULElement].orient = horizontal
+console.log: disabletabs: [object XULElement].pack = 
+console.log: disabletabs: [object XULElement].hidden = false
+console.log: disabletabs: [object XULElement].collapsed = false
+console.log: disabletabs: [object XULElement].observes = 
+console.log: disabletabs: [object XULElement].menu = 
+console.log: disabletabs: [object XULElement].tooltip = tabbrowser-tab-tooltip
+console.log: disabletabs: [object XULElement].width = 
+console.log: disabletabs: [object XULElement].height = 
+console.log: disabletabs: [object XULElement].minWidth = 
+console.log: disabletabs: [object XULElement].minHeight = 
+console.log: disabletabs: [object XULElement].maxWidth = 
+console.log: disabletabs: [object XULElement].maxHeight = 
+console.log: disabletabs: [object XULElement].persist = 
+console.log: disabletabs: [object XULElement].left = 
+console.log: disabletabs: [object XULElement].top = 
+console.log: disabletabs: [object XULElement].datasources = 
+console.log: disabletabs: [object XULElement].ref = 
+console.log: disabletabs: [object XULElement].tooltipText = 
+console.log: disabletabs: [object XULElement].statusText = 
+console.log: disabletabs: [object XULElement].allowEvents = false
+console.log: disabletabs: [object XULElement].database = null
+console.log: disabletabs: [object XULElement].builder = null
+console.log: disabletabs: [object XULElement].resource = [xpconnect wrapped nsIRDFResource]
+console.log: disabletabs: [object XULElement].controllers = [object XULControllers]
+console.log: disabletabs: [object XULElement].boxObject = [object BoxObject]
+console.log: disabletabs: [object XULElement].style = [object CSS2Properties]
+console.log: disabletabs: [object XULElement].onabort = null
+console.log: disabletabs: [object XULElement].onblur = null
+console.log: disabletabs: [object XULElement].onfocus = null
+console.log: disabletabs: [object XULElement].oncanplay = null
+console.log: disabletabs: [object XULElement].oncanplaythrough = null
+console.log: disabletabs: [object XULElement].onchange = null
+console.log: disabletabs: [object XULElement].onclick = null
+console.log: disabletabs: [object XULElement].oncontextmenu = null
+console.log: disabletabs: [object XULElement].ondblclick = null
+console.log: disabletabs: [object XULElement].ondrag = null
+console.log: disabletabs: [object XULElement].ondragend = null
+console.log: disabletabs: [object XULElement].ondragenter = null
+console.log: disabletabs: [object XULElement].ondragleave = null
+console.log: disabletabs: [object XULElement].ondragover = null
+console.log: disabletabs: [object XULElement].ondragstart = null
+console.log: disabletabs: [object XULElement].ondrop = null
+console.log: disabletabs: [object XULElement].ondurationchange = null
+console.log: disabletabs: [object XULElement].onemptied = null
+console.log: disabletabs: [object XULElement].onended = null
+console.log: disabletabs: [object XULElement].oninput = null
+console.log: disabletabs: [object XULElement].oninvalid = null
+console.log: disabletabs: [object XULElement].onkeydown = null
+console.log: disabletabs: [object XULElement].onkeypress = null
+console.log: disabletabs: [object XULElement].onkeyup = null
+console.log: disabletabs: [object XULElement].onload = null
+console.log: disabletabs: [object XULElement].onloadeddata = null
+console.log: disabletabs: [object XULElement].onloadedmetadata = null
+console.log: disabletabs: [object XULElement].onloadstart = null
+console.log: disabletabs: [object XULElement].onmousedown = null
+console.log: disabletabs: [object XULElement].onmouseenter = null
+console.log: disabletabs: [object XULElement].onmouseleave = null
+console.log: disabletabs: [object XULElement].onmousemove = null
+console.log: disabletabs: [object XULElement].onmouseout = null
+console.log: disabletabs: [object XULElement].onmouseover = null
+console.log: disabletabs: [object XULElement].onmouseup = null
+console.log: disabletabs: [object XULElement].onpause = null
+console.log: disabletabs: [object XULElement].onplay = null
+console.log: disabletabs: [object XULElement].onplaying = null
+console.log: disabletabs: [object XULElement].onprogress = null
+console.log: disabletabs: [object XULElement].onratechange = null
+console.log: disabletabs: [object XULElement].onreset = null
+console.log: disabletabs: [object XULElement].onresize = null
+console.log: disabletabs: [object XULElement].onscroll = null
+console.log: disabletabs: [object XULElement].onseeked = null
+console.log: disabletabs: [object XULElement].onseeking = null
+console.log: disabletabs: [object XULElement].onselect = null
+console.log: disabletabs: [object XULElement].onshow = null
+console.log: disabletabs: [object XULElement].onstalled = null
+console.log: disabletabs: [object XULElement].onsubmit = null
+console.log: disabletabs: [object XULElement].onsuspend = null
+console.log: disabletabs: [object XULElement].ontimeupdate = null
+console.log: disabletabs: [object XULElement].onvolumechange = null
+console.log: disabletabs: [object XULElement].onwaiting = null
+console.log: disabletabs: [object XULElement].onmozfullscreenchange = null
+console.log: disabletabs: [object XULElement].onmozfullscreenerror = null
+console.log: disabletabs: [object XULElement].onmozpointerlockchange = null
+console.log: disabletabs: [object XULElement].onmozpointerlockerror = null
+console.log: disabletabs: [object XULElement].onerror = null
+console.log: disabletabs: [object XULElement].setIsPrerendered = function setIsPrerendered() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].swapFrameLoaders = function swapFrameLoaders() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].frameLoader = null
+console.log: disabletabs: [object XULElement].getAttribute = function getAttribute() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getAttributeNS = function getAttributeNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].setAttribute = function setAttribute() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].setAttributeNS = function setAttributeNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].removeAttribute = function removeAttribute() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].removeAttributeNS = function removeAttributeNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].hasAttribute = function hasAttribute() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].hasAttributeNS = function hasAttributeNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].hasAttributes = function hasAttributes() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].closest = function closest() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].matches = function matches() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].webkitMatchesSelector = function webkitMatchesSelector() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getElementsByTagName = function getElementsByTagName() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getElementsByTagNameNS = function getElementsByTagNameNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getElementsByClassName = function getElementsByClassName() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].mozMatchesSelector = function mozMatchesSelector() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].setCapture = function setCapture() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].releaseCapture = function releaseCapture() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].mozRequestFullScreen = function mozRequestFullScreen() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].mozRequestPointerLock = function mozRequestPointerLock() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getAttributeNode = function getAttributeNode() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].setAttributeNode = function setAttributeNode() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].removeAttributeNode = function removeAttributeNode() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getAttributeNodeNS = function getAttributeNodeNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].setAttributeNodeNS = function setAttributeNodeNS() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getClientRects = function getClientRects() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getBoundingClientRect = function getBoundingClientRect() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].scrollIntoView = function scrollIntoView() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].scroll = function scroll() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].scrollTo = function scrollTo() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].scrollBy = function scrollBy() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].insertAdjacentHTML = function insertAdjacentHTML() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].querySelector = function querySelector() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].querySelectorAll = function querySelectorAll() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].createShadowRoot = function createShadowRoot() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getDestinationInsertionPoints = function getDestinationInsertionPoints() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getAnimations = function getAnimations() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].remove = function remove() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getBoxQuads = function getBoxQuads() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].tagName = tabs
+console.log: disabletabs: [object XULElement].id = tabbrowser-tabs
+console.log: disabletabs: [object XULElement].classList = tabbrowser-tabs
+console.log: disabletabs: [object XULElement].attributes = [object NamedNodeMap]
+console.log: disabletabs: [object XULElement].onwheel = null
+console.log: disabletabs: [object XULElement].scrollTop = 0
+console.log: disabletabs: [object XULElement].scrollLeft = 0
+console.log: disabletabs: [object XULElement].scrollWidth = 1440
+console.log: disabletabs: [object XULElement].scrollHeight = 31
+console.log: disabletabs: [object XULElement].clientTop = 0
+console.log: disabletabs: [object XULElement].clientLeft = 0
+console.log: disabletabs: [object XULElement].clientWidth = 1440
+console.log: disabletabs: [object XULElement].clientHeight = 31
+console.log: disabletabs: [object XULElement].scrollTopMax = 0
+console.log: disabletabs: [object XULElement].scrollLeftMax = 0
+console.log: disabletabs: [object XULElement].innerHTML = <tab xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" class="tabbrowser-tab" selected="true" visuallyselected="true" fadein="true" context="tabContextMenu" linkedpanel="panel-3-1" first-tab="true" last-tab="true" label="Connecting…" visibleLabel="Connecting…" crop="end" onerror="this.removeAttribute('image');" busy="true"/>
+console.log: disabletabs: [object XULElement].outerHTML = <tabs xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" id="tabbrowser-tabs" class="tabbrowser-tabs" tabbrowser="content" flex="1" setfocus="false" tooltip="tabbrowser-tab-tooltip" stopwatchid="FX_TAB_CLICK_MS" orient="horizontal" value=""><tab class="tabbrowser-tab" selected="true" visuallyselected="true" fadein="true" context="tabContextMenu" linkedpanel="panel-3-1" first-tab="true" last-tab="true" label="Connecting…" visibleLabel="Connecting…" crop="end" onerror="this.removeAttribute('image');" busy="true"/></tabs>
+console.log: disabletabs: [object XULElement].shadowRoot = null
+console.log: disabletabs: [object XULElement].previousElementSibling = [object XULElement]
+console.log: disabletabs: [object XULElement].nextElementSibling = [object XULElement]
+console.log: disabletabs: [object XULElement].children = [object HTMLCollection]
+console.log: disabletabs: [object XULElement].firstElementChild = [object XULElement]
+console.log: disabletabs: [object XULElement].lastElementChild = [object XULElement]
+console.log: disabletabs: [object XULElement].childElementCount = 1
+console.log: disabletabs: [object XULElement].scrollByNoFlush = function scrollByNoFlush() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].mozScrollSnap = function mozScrollSnap() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].fontSizeInflation = 1
+console.log: disabletabs: [object XULElement].scrollTopMin = 0
+console.log: disabletabs: [object XULElement].scrollLeftMin = 0
+console.log: disabletabs: [object XULElement].hasChildNodes = function hasChildNodes() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].insertBefore = function insertBefore() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].appendChild = function appendChild() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].replaceChild = function replaceChild() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].removeChild = function removeChild() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].normalize = function normalize() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].cloneNode = function cloneNode() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].isEqualNode = function isEqualNode() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].compareDocumentPosition = function compareDocumentPosition() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].contains = function contains() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].lookupPrefix = function lookupPrefix() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].lookupNamespaceURI = function lookupNamespaceURI() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].isDefaultNamespace = function isDefaultNamespace() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].setUserData = function setUserData() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getUserData = function getUserData() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].nodeType = 1
+console.log: disabletabs: [object XULElement].nodeName = tabs
+console.log: disabletabs: [object XULElement].baseURI = chrome://browser/content/browser.xul
+console.log: disabletabs: [object XULElement].ownerDocument = [object XULDocument]
+console.log: disabletabs: [object XULElement].parentNode = [object XULElement]
+console.log: disabletabs: [object XULElement].parentElement = [object XULElement]
+console.log: disabletabs: [object XULElement].childNodes = [object NodeList]
+console.log: disabletabs: [object XULElement].firstChild = [object XULElement]
+console.log: disabletabs: [object XULElement].lastChild = [object XULElement]
+console.log: disabletabs: [object XULElement].previousSibling = [object XULElement]
+console.log: disabletabs: [object XULElement].nextSibling = [object XULElement]
+console.log: disabletabs: [object XULElement].nodeValue = null
+console.log: disabletabs: [object XULElement].textContent = 
+console.log: disabletabs: [object XULElement].namespaceURI = http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul
+console.log: disabletabs: [object XULElement].prefix = null
+console.log: disabletabs: [object XULElement].localName = tabs
+console.log: disabletabs: [object XULElement].ELEMENT_NODE = 1
+console.log: disabletabs: [object XULElement].ATTRIBUTE_NODE = 2
+console.log: disabletabs: [object XULElement].TEXT_NODE = 3
+console.log: disabletabs: [object XULElement].CDATA_SECTION_NODE = 4
+console.log: disabletabs: [object XULElement].ENTITY_REFERENCE_NODE = 5
+console.log: disabletabs: [object XULElement].ENTITY_NODE = 6
+console.log: disabletabs: [object XULElement].PROCESSING_INSTRUCTION_NODE = 7
+console.log: disabletabs: [object XULElement].COMMENT_NODE = 8
+console.log: disabletabs: [object XULElement].DOCUMENT_NODE = 9
+console.log: disabletabs: [object XULElement].DOCUMENT_TYPE_NODE = 10
+console.log: disabletabs: [object XULElement].DOCUMENT_FRAGMENT_NODE = 11
+console.log: disabletabs: [object XULElement].NOTATION_NODE = 12
+console.log: disabletabs: [object XULElement].DOCUMENT_POSITION_DISCONNECTED = 1
+console.log: disabletabs: [object XULElement].DOCUMENT_POSITION_PRECEDING = 2
+console.log: disabletabs: [object XULElement].DOCUMENT_POSITION_FOLLOWING = 4
+console.log: disabletabs: [object XULElement].DOCUMENT_POSITION_CONTAINS = 8
+console.log: disabletabs: [object XULElement].DOCUMENT_POSITION_CONTAINED_BY = 16
+console.log: disabletabs: [object XULElement].DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC = 32
+console.log: disabletabs: [object XULElement].getBoundMutationObservers = function getBoundMutationObservers() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].nodePrincipal = [xpconnect wrapped (nsISupports, nsIPrincipal, nsISerializable)]
+console.log: disabletabs: [object XULElement].baseURIObject = [xpconnect wrapped nsIURI]
+console.log: disabletabs: [object XULElement].addEventListener = function addEventListener() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].removeEventListener = function removeEventListener() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].dispatchEvent = function dispatchEvent() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].setEventHandler = function setEventHandler() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].getEventHandler = function getEventHandler() {
+    [native code]
+}
+console.log: disabletabs: [object XULElement].ownerGlobal = [object ChromeWindow]
+console.log: disabletabs: /properties of [object XULElement]
