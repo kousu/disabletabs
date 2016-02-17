@@ -87,12 +87,13 @@ require("sdk/tabs/tab").Tab.prototype.setWindow = function(window, index = -1) {
 }
 
 
+// run this on any windows open at boot, because the first windows
+// don't trigger the 'open' event, at least on Firefox 44.
+for(let w of windows) {
+	remove_tabbar(w);
+}
+
 exports.main = function(){
-	// run this on any windows open at boot, because the first windows
-	// don't trigger the 'open' event, at least on Firefox 44.
-	for(let w of windows) {
-		remove_tabbar(w);
-	}
 
 	// Set "Open new windows in a new tab instead". Messing with global prefs is probably frowned upon, but since this is Disable Tabs, everything to do with tabs should be fair game.
 	// This *sidesteps* but does not solve or really deal with at all the problem (bug?) that windows.on('open') doesn't trigger for new windows.

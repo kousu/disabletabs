@@ -67,7 +67,8 @@ Everytime you sign it you need to bump the version number: AMO remembers every v
 TODO
 ----
 
-* [ ] At boot the tab bar displays, because main() doesn't run fast enough. Is there anything I can do about this?
+* [?] At boot the tab bar displays for a couple seconds because main() doesn't run fast enough. Is there anything I can do about this?
+* [ ] Sometimes the tabbar reappears --- it seems to last until the new tab's 'ready' handler fires at least.
 * [ ] On init, detach all tabs -- otherwise enabling/installing the extension during an active session can lead to lost tabs
 * [x] The Double Download Bug
   - Because .ready doesn't fire until after it's downloaded a page, we are downloading pages twice
@@ -82,9 +83,9 @@ TODO
   * Is it as simple as an uncaught exception? One that, since it's crashing in the XUL layer, snipes the whole page?
   * It's reliably triggered by "Search <engine> for <linktext>" in the context menu
 * [ ] See if it's possible to `display: none` the menu, context, and preference items that reference tabs as well
-* [ ] Read browser.tabs.loadInBackground (aka "When I open a link in a new tab, switch to it immediately") and replicate it by window.activate()
+* [?] Read browser.tabs.loadInBackground (aka "When I open a link in a new tab, switch to it immediately") and replicate it by window.activate()
   * - then distribute documentation on how to no_focus in i3 and other tiling window managers so that *only* those winodws have this behaviour
-
+  * I think I did this, but it doesn't work on my system. Maybe i3 is overriding .focus() events?
 
 License
 ---
