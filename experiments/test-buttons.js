@@ -22,6 +22,15 @@ ActionButton({
   }
 });
 
+ActionButton({
+  id: "detachtab-button",
+  label: "Detach Current Tab (this should be the same as tearoff, but we'll seeee about that)",
+  icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACUElEQVQ4jaWTTWtTURCGjzc33CCpbVKN4kexC9EUY1Hov+iqPyDrbgtuCrViKUERqsWVguBGQaW4UiKiaEVxoShFGgnuBMUqNW3zce49Z+ZxUWtwoRR8YXbzPswM7xj+JgVEiXGsYVknxgII4Ltt5p8AB8RArOAUVQfqQJNtAFA8QgvF6i9PR1Dt0KbVBTjncM4hIni/OZv3HsRB+wvefiP2LcQnJIkQe49FEJFNQLPZZHh4mEwmQyqVoqenh3K5TGvlK1dOlageH+HG4DFar1/S0A6Lr99xdN8QxWKRXC6HGR0dJZvNMjk5Sb1ep1gskk6nuTo/D+/ec7dvkBdhP9cKeX7UXxEZQ2/YRxRFLC8vY+bm5qhUKnjvsdYyPj5OFEWcnTnHujiS5TfcPDbAw50h9w7u5f7UadLZFLVaDRHBiGzuY61lbGyMXC5HoVBgrbGGWAW/TvvxHR7s7udFKs/1oyfZ+PSRTqeDqm7eoFqtEoYhmUyG2dlZVJU4iREfI/WP3Nt9iMUdu7jdf5Anly5i0oaVlRWazSZmYWGBIAiIoohyucz09DQTExPMnJli9dlT5vcM8Kh3gFsHDuNqb9mb7yXMRBhjWFpawpRKJVKpFMYYgiAgDEOCIOD81BkunBjh8pEhKqUhGkvP6bQ/U//wgUP5/YRhSDabxbTbbVQV5xyq2q0kgR8NdOM7JKuo/Y5qggqIdPvMlnkrQCKCquJFsOrxeHAJxA48eFU6Xv4EqOpv41YqnQirqliv4MEmQtN7RBSs7wL+/gvb038DfgJnyUabbHzUbQAAAABJRU5ErkJggg==",
+  onClick: function() {
+    require("sdk/tabs").activeTab.detach();
+  }
+});
+
 
 /* screwing around with trying to implement @DUzun's setWindow() functionality */
 /* I read gBrowser.addTab() to get a feel for how things work internally. It unfortunately assumes it's given a URI,

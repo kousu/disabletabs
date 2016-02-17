@@ -69,7 +69,7 @@ TODO
 
 * [?] At boot the tab bar displays for a couple seconds because main() doesn't run fast enough. Is there anything I can do about this?
 * [ ] Sometimes the tabbar reappears --- it seems to last until the new tab's 'ready' handler fires at least.
-* [ ] On init, detach all tabs -- otherwise enabling/installing the extension during an active session can lead to lost tabs
+* [x] On init, detach all tabs -- otherwise enabling/installing the extension during an active session can lead to lost tabs
 * [x] The Double Download Bug
   - Because .ready doesn't fire until after it's downloaded a page, we are downloading pages twice
 * [x?] It's possible to press ctrl-t really fast and spawn lots of tabs which never get caught by the extension
@@ -86,6 +86,8 @@ TODO
 * [?] Read browser.tabs.loadInBackground (aka "When I open a link in a new tab, switch to it immediately") and replicate it by window.activate()
   * - then distribute documentation on how to no_focus in i3 and other tiling window managers so that *only* those winodws have this behaviour
   * I think I did this, but it doesn't work on my system. Maybe i3 is overriding .focus() events?
+* [ ] SDK bug: after .detach(), tabs.activeTab is set to the newly detached tab, *even if it doesn't have the focus*. You have to switch to another window and switch back to set it correct.
+* [ ] Is there a way to catch the extension being disabled? I would like to undo my remove_tabbar hack in that case, see.
 
 License
 ---
