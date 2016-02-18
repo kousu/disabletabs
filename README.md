@@ -30,10 +30,10 @@ Then:
 - `make package` - Package the extension into an XPI file.
  - When packaging, be aware of the [`.jpmignore`](https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#Using_.jpmignore_to_ignore_files) file: don't publish passwords or test code!
 - `make signed` - Package and sign the extension into an XPI file. Requires [AMO](https://addons.mozilla.org) credentials in `api_secret.txt`.
-- To install, tell Firefox to open it: `firefox disable_tabs-1.3.0-fx.xpi`
+- `firefox disable_tabs-1.3.0-fx.xpi` - to install
  - Firefox is picky about this: it won't accept this as a `file://` URL, it won't accept it if you paste the path into the address bar, and it won't accept it if there's `../`s in the path. It will accept it from `http://localhost:8000/` but you need to whitelist localhost first(TODO: confirm this).
-
-
+ - You can also use the GUI: Firefox > Menu > Add-ons > Extensions > Settings Dropdown > Install Add-on From File
+ - If it silently fails, the signature check is probably failing. See below.
 
 
 ### Signing
