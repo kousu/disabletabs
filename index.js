@@ -29,7 +29,7 @@ const { getTabContainer } = require("sdk/tabs/utils");
  * If the tab is the only one on its window nothing happens.
  * Private browsing is preserved: if this.window is a private browsing window, so is will the new window be.
  */
-require("sdk/tabs/tab").Tab.prototype.detach = function() {
+require("sdk/tabs/tab").Tab.prototype.kousu_detach = function() {
         // ((the single-tab check is handled by replaceTabWithWindow, so we don't need to do it))
 	// ((as is the preservation of private browsing ))
 	// ((really this is just a Jetpack SDK-friendly wrapper for XUL's replaceTabWithWindow())
@@ -58,7 +58,7 @@ require("sdk/tabs/tab").Tab.prototype.detach = function() {
  * XXX how does this interact with private browsing? This could be bad...
  * XXX write a similar method attached to the Window prototype: window.adopt(tab)
  */
-require("sdk/tabs/tab").Tab.prototype.setWindow = function(window, index = -1) {
+require("sdk/tabs/tab").Tab.prototype.kousu_setWindow = function(window, index = -1) {
 	console.log("index = " + index);
 	if(window) {
 		console.debug("moving tab '" + this.title + "' from window '" + this.window.title + "' to window '" + window.title + "'");
@@ -68,6 +68,9 @@ require("sdk/tabs/tab").Tab.prototype.setWindow = function(window, index = -1) {
 	}
 }
 
+
+require("setWindow.js");
+require("sdk/tabs/tab").Tab.prototype.detach = function() { this.setWindow() }
 
 
 ///////////////  main  ////////////////
