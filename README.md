@@ -91,6 +91,13 @@ TODO
 * [ ] If the "Firefox has prevented this redirect" warning triggers, it sticks on the first window then immediately vanishes instead of following the tab to the second, so then it just seems like disabletabs broke the link.
   -- I guess the warning's DOM element is attached to the window instead of the tab
   -- frankly, I think this is a bug in the browser, not here
+* [ ] When I was using tab.close() and duplicating the tab, the window the tab was being created in would be static, but now
+   it briefly shows the next tab if the next tab is a new window instead of being made by rightclick->make new tab.
+   It seems that the .on('open') handler runs before the UI updates, and has a chance to affect how the UI updates therefore.
+ - a. try switching back to that + using .duplicateTab() (which is somewhere in the API) to see if the UI behaves like I think
+ - b. try exploring preventDefault() and returning false and stuff
+   - return false; doesn't work.
+ - c. is there an earlier event I can catch? maybe it's better to just
 
 License
 ---
