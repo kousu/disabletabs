@@ -53,7 +53,26 @@ but only for extensions which aren't on addons.mozilla.org(??) --- so you can si
 
 Anyway, this all sounds very not DIY friendly, though I suppose I can't fault them since the web is a dangerous place.
 
-To use `npm run sign` you need to get an account at AMO, generate an API key, and paste the "key" (i.e. the API account name) into package.json and the "secret" (i.e. the password) into `./api_secret.txt`.
+To use `make signed` you need to get an account at AMO, generate an API key, and paste the "key" (i.e. the API account name) into package.json and the "secret" (i.e. the password) into `./api_secret.txt`.
+
+If you get
+```
+status: 401
+response: {"detail":"JWT iat (issued at time) is invalid. Make sure your system clock is synchronized with something like TLSdate."}
+```
+```
+Then your clock is skewed. You should be able to fix this with:
+$ sudo ntpd -sd
+adjtimex returns frequency of 2.123993ppm
+constraint certificate verification turned off
+ntp engine ready
+reply from 206.108.0.133: offset -269.513726 delay 0.107407, next query 8s 
+set local clock to Sun Feb 21 18:42:02 EST 2016 (offset -269.513726s)
+reply from 167.114.204.238: negative delay -269.397765s, next query 3090s
+reply from 192.95.20.208: negative delay -269.381063s, next query 3029s
+reply from 199.182.221.110: negative delay -269.339643s, next query 3073s
+^Cntp engine exiting   # notice the Ctrl-C here, ntpd won't exit by itself
+```
 
 Everytime you sign it you need to bump the version number: AMO remembers every version it signs, forever. So watch your language (i.e. don't swear in C++ or cuss in ALGOL).
 
